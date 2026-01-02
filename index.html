@@ -3,28 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>King Trader Bot - 16 Pairs Pro</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- TradingView Widget Script -->
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async></script>
+    <title>King Trader Bot Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --blue-border: #007bff;
+            --buy-glow: #28a745;
+            --sell-glow: #dc3545;
+            --bg-light: #f4f7f6;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); margin: 0; overflow-x: hidden; }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed; left: -250px; top: 0; width: 250px; height: 100%;
+            background: #fff; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: 0.3s; z-index: 1000; padding-top: 60px;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar a {
+            display: block; padding: 15px 25px; text-decoration: none;
+            color: #333; font-weight: 500; border-bottom: 1px solid #eee;
+        }
+        .sidebar a:hover { background: var(--blue-border); color: #fff; }
+
+        .menu-btn { position: fixed; top: 20px; left: 20px; font-size: 25px; cursor: pointer; z-index: 1001; }
+
+        /* Header & Logo */
+        .header { text-align: center; padding: 20px; background: #fff; border-bottom: 2px solid var(--blue-border); }
+        .header img { width: 100px; height: 100px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; padding: 20px;
+        }
+
+        /* Phone Style Box */
+        .pair-box {
+            background: #fff;
+            border-top: 8px solid var(--blue-border);
+            border-bottom: 8px solid var(--blue-border);
+            border-left: 2px solid var(--blue-border);
+            border-right: 2px solid var(--blue-border);
+            border-radius: 30px; padding: 15px; text-align: center;
+            transition: 0.5s; position: relative; overflow: hidden;
+        }
+
+        .signal-btn {
+            background: var(--blue-border); color: #fff; border: none;
+            padding: 10px 20px; border-radius: 20px; cursor: pointer; width: 100%;
+            font-weight: bold; margin-top: 10px;
+        }
+
+        /* Signal Animations */
+        .buy-signal { border-color: var(--buy-glow) !important; box-shadow: 0 0 20px var(--buy-glow); }
+        .sell-signal { border-color: var(--sell-glow) !important; box-shadow: 0 0 20px var(--sell-glow); }
+
+        /* Privacy Policy Modal */
+        #policy-modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; max-width: 500px; background: #fff; padding: 20px;
+            border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 2000;
+        }
+        
+        /* TradingView Meter Small */
+        .tv-meter { height: 130px; overflow: hidden; pointer-events: none; }
+    </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <img src="logo.png" alt="King Trader" class="bot-logo">
-        <h1>KING TRADER PREMIUM BOT</h1>
-        <div id="connection-status">Online</div>
-    </header>
+    <div class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
 
-    <div class="grid-container" id="pairs-grid">
-        <!-- 16 Boxes will be generated here by JavaScript -->
+    <nav class="sidebar" id="sidebar">
+        <a href="https://www.tiktok.com/@kingtraderofficail" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="https://www.youtube.com/@kingtraderofficial45" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+        <a href="https://broker-qx.pro/sign-up/?lid=1696715" target="_blank"><i class="fas fa-chart-line"></i> Join Quotex</a>
+        <a href="https://wa.me/923064391353" target="_blank"><i class="fab fa-whatsapp"></i> Premium Access</a>
+        <a href="#" onclick="showPolicy()"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+    </nav>
+
+    <div class="header">
+        <img src="logo.png" alt="King Trader Logo">
+        <h2>KING TRADER BOT AI</h2>
     </div>
 
-    <footer class="bot-footer">
-        <p>Register: <a href="https://broker-qx.pro/sign-up/?lid=1696715">Quotex Official</a></p>
-        <p>WhatsApp: 03064391353 | Security Code: pksignalsking900</p>
-    </footer>
+    <div class="grid-container" id="bot-grid"></div>
 
-    <script src="script.js"></script>
+    <!-- Policy Modal -->
+    <div id="policy-modal">
+        <h3>Trading Rules (12 Points)</h3>
+        <ol style="text-align: left; font-size: 13px;">
+            <li>Follow Risk Management strictly.</li>
+            <li>Use only 2-5% of your total balance per trade.</li>
+            <li>Always wait for the full 1-minute expiry.</li>
+            <li>Don't trade in high-impact news.</li>
+            <li>Use Martingale only up to Level 1.</li>
+            <li>If 3 losses in a row, stop for the day.</li>
+            <li>Respect the market trend.</li>
+            <li>Minimum trade amount: $1 or as per balance.</li>
+            <li>Keep your emotions in check.</li>
+            <li>Only use 35% of daily target profit.</li>
+            <li>Verify signals with TradingView Meter.</li>
+            <li>King Trader is not responsible for losses.</li>
+        </ol>
+        <button onclick="closePolicy()" class="signal-btn">Understood</button>
+    </div>
+
+    <script>
+        const pairs = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "EURJPY", "BTCUSD", "ETHUSD", "LTCUSD", "GOLD", "USDCAD", "GBPJPY", "EURGBP", "AUDJPY", "NZDUSD", "USDCHF", "SOLUSD"];
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function showPolicy() { document.getElementById('policy-modal').style.display = 'block'; }
+        function closePolicy() { document.getElementById('policy-modal').style.display = 'none'; }
+
+        // Security Check
+        if(localStorage.getItem('auth') !== 'pksignalsking900') {
+            let code = prompt("Enter Security Code:");
+            if(code === 'pksignalsking900') localStorage.setItem('auth', code);
+            else { alert("Wrong Code!"); window.location.reload(); }
+        }
+
+        const grid = document.getElementById('bot-grid');
+        pairs.forEach(pair => {
+            const box = document.createElement('div');
+            box.className = 'pair-box';
+            box.id = `box-${pair}`;
+            box.innerHTML = `
+                <h4>${pair}</h4>
+                <div class="tv-meter">
+                    <iframe src="https://s.tradingview.com/embed-widget/technical-analysis/?symbol=FX%3A${pair}&interval=1m&displayMode=single&colorTheme=light" frameborder="0"></iframe>
+                </div>
+                <div id="sig-${pair}" style="font-weight:bold; margin:10px 0;">ANALYZING...</div>
+                <button class="signal-btn" onclick="extractSignal('${pair}')">EXTRACT SIGNAL</button>
+            `;
+            grid.appendChild(box);
+        });
+
+        async function extractSignal(pair) {
+            const box = document.getElementById(`box-${pair}`);
+            const text = document.getElementById(`sig-${pair}`);
+            text.innerText = "FETCHING AI DATA...";
+            
+            // Logic to fetch from Gemini/Binance (Simulated)
+            // In reality, this calls your bot.py API or direct JS fetch
+            setTimeout(() => {
+                const signals = ["BUY ⬆️", "SELL ⬇️"];
+                const result = signals[Math.floor(Math.random() * signals.length)];
+                text.innerText = "1 MIN " + result;
+                
+                box.classList.remove('buy-signal', 'sell-signal');
+                if(result.includes("BUY")) {
+                    box.classList.add('buy-signal');
+                    text.style.color = 'green';
+                } else {
+                    box.classList.add('sell-signal');
+                    text.style.color = 'red';
+                }
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
