@@ -1,15 +1,15 @@
-name: King Trader Bot Deploy
+name: Deploy King Trader Bot
 on:
   push:
     branches: [ main ]
-permissions:
-  contents: write
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Deploy to GitHub Pages
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           branch: gh-pages
