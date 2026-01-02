@@ -1,59 +1,68 @@
-// Online/Offline Check
-window.addEventListener('online', updateStatus);
-window.addEventListener('offline', updateStatus);
+const API_KEY_GEMINI = "YOUR_GEMINI_KEY"; // Replace with your key
+const API_KEY_FOREX = "YOUR_FOREX_KEY";   // Replace with your key
 
-function updateStatus() {
-    const status = document.getElementById('online-status');
-    if (navigator.onLine) {
-        status.innerText = "ONLINE";
-        status.style.color = "#00ff00";
-    } else {
-        status.innerText = "OFFLINE - Check Connection";
-        status.style.color = "#ff0000";
-        alert("Bot signal nahi dega jab tak aap online nahi hotay.");
+const pairs = [
+    "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", 
+    "USD/CAD", "EUR/JPY", "EUR/GBP", "NZD/USD",
+    "GBP/JPY", "AUD/JPY", "USD/CHF", "EUR/CHF",
+    "BTC/USD", "ETH/USD", "LTC/USD", "XAU/USD"
+];
+
+const grid = document.getElementById('pairs-grid');
+
+// Generate 16 Boxes
+pairs.forEach((pair, index) => {
+    const pairId = pair.replace('/', '');
+    const card = document.createElement('div');
+    card.className = 'pair-card';
+    card.id = `card-${pairId}`;
+    
+    card.innerHTML = `
+        <div class="pair-name">${pair}</div>
+        <div class="meter-container" id="meter-${pairId}">
+            <!-- TradingView Widget would go here -->
+            <small>Analyzing Market...</small>
+        </div>
+        <div class="result-text" id="res-${pairId}">READY</div>
+        <button class="signal-btn" onclick="getSignal('${pair}', '${pairId}')">EXTRACT SIGNAL</button>
+    `;
+    grid.appendChild(card);
+});
+
+async function getSignal(pairName, pairId) {
+    const card = document.getElementById(`card-${pairId}`);
+    const resText = document.getElementById(`res-${pairId}`);
+    
+    // UI Reset
+    resText.innerText = "WAIT...";
+    card.classList.remove('buy-active', 'sell-active');
+
+    try {
+        // AI & Forex Logic Simulation
+        // Haqeeqi API call ke liye: fetch(`URL?symbol=${pairName}&apikey=${API_KEY_FOREX}`)
+        
+        const decision = Math.random() > 0.5 ? "BUY" : "SELL"; // Yahan Gemini/Forex ka logic aayega
+        
+        setTimeout(() => {
+            if(decision === "BUY") {
+                resText.innerText = "1 MIN - BUY ⬆️";
+                resText.style.color = "#2ecc71";
+                card.classList.add('buy-active');
+            } else {
+                resText.innerText = "1 MIN - SELL ⬇️";
+                resText.style.color = "#e74c3c";
+                card.classList.add('sell-active');
+            }
+        }, 1500);
+
+    } catch (error) {
+        resText.innerText = "API ERROR";
     }
 }
 
-function checkAuth() {
-    const inputCode = document.getElementById('auth-code').value;
-    if (inputCode === CONFIG.SECURITY_CODE) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-bot').style.display = 'block';
-        updateStatus();
-    } else {
-        alert("Wrong Security Code!");
-    }
-}
-
-async function generateSignal() {
-    if (!navigator.onLine) return alert("You are offline!");
-
-    const pair = document.getElementById('asset-pair').value;
-    document.getElementById('signal-text').innerText = "ANALYZING MARKET...";
-
-    // Simulated Gemini AI / Forex Logic
-    // Haqeeqi API integration ke liye yahan fetch use karein
-    setTimeout(() => {
-        const signals = ["STRONG CALL ⬆️", "STRONG PUT ⬇️", "WAIT - NO SIGNAL"];
-        const result = signals[Math.floor(Math.random() * signals.length)];
-        
-        const display = document.getElementById('signal-text');
-        display.innerText = result;
-        
-        if(result.includes("CALL")) display.style.color = "#00ff00";
-        else if(result.includes("PUT")) display.style.color = "#ff0000";
-        else display.style.color = "#ffd700";
-
-        startTimer();
-    }, 2000);
-}
-
-function startTimer() {
-    let timeLeft = 60;
-    const timerElem = document.getElementById('timer');
-    const interval = setInterval(() => {
-        timeLeft--;
-        timerElem.innerText = `Expiry: 00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
-        if (timeLeft <= 0) clearInterval(interval);
-    }, 1000);
-}
+// Online/Offline Status check
+window.addEventListener('online', () => document.getElementById('connection-status').innerText = "Online");
+window.addEventListener('offline', () => {
+    document.getElementById('connection-status').innerText = "Offline - Signals Disabled";
+    alert("Internet connection lost!");
+});
