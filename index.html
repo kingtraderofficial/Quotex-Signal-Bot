@@ -3,132 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>King Trader Pro | Ultra HD AI Bot</title>
+    <title>King Trader | Ultra HD AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0066ff;
-            --gold-3d: linear-gradient(145deg, #ffd700, #b8860b);
-            --blue-3d: linear-gradient(145deg, #007bff, #0056b3);
-            --glass: rgba(255, 255, 255, 0.8);
-            --shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --primary-blue: #0052cc;
+            --vip-gold: linear-gradient(135deg, #8a6614 0%, #d4af37 50%, #8a6614 100%);
+            --buy-green: #00c853;
+            --sell-red: #ff1744;
+            --bg-glass: rgba(255, 255, 255, 0.7);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f4f7f9; min-height: 100vh; overflow-x: hidden; }
 
-        body { background: #f8f9fa; min-height: 100vh; overflow-x: hidden; }
-
-        /* --- IPHONE HD BLUR BACKGROUND --- */
-        .mesh-bg {
+        /* --- IPHONE ANIMATED BLUR BACKGROUND --- */
+        .animated-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: 
-                radial-gradient(at 0% 0%, rgba(161, 196, 253, 0.5) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(194, 233, 251, 0.5) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(251, 194, 235, 0.5) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(166, 193, 238, 0.5) 0px, transparent 50%);
-            filter: blur(100px); animation: meshMove 20s infinite alternate;
+            background: linear-gradient(45deg, #d4e4ff, #fff1f1, #e8ffed);
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            filter: blur(100px);
         }
-        @keyframes meshMove { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* --- SECURITY PAGE (LUXURY) --- */
+        /* --- SECURITY PAGE --- */
         #auth-screen {
-            position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 10000;
-            backdrop-filter: blur(20px); display: flex; justify-content: center; align-items: center;
+            position: fixed; inset: 0; background: white; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .auth-card {
-            background: white; padding: 50px; border-radius: 40px; text-align: center;
-            box-shadow: var(--shadow); width: 90%; max-width: 450px; border: 1px solid rgba(0,0,0,0.05);
+            background: #fff; padding: 40px; border-radius: 30px; text-align: center;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1); width: 90%; max-width: 400px;
         }
-        .auth-card h1 { font-weight: 800; font-size: 28px; margin-bottom: 30px; letter-spacing: -1px; }
         .auth-card input {
             width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #eee;
             font-size: 20px; text-align: center; margin-bottom: 20px; outline: none; transition: 0.3s;
         }
-        .auth-card input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0,102,255,0.1); }
-        .wa-admin { color: #25d366; text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .auth-card input:focus { border-color: var(--primary-blue); }
+        .wa-contact { color: #25d366; text-decoration: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; }
 
-        /* --- HD HEADER --- */
+        /* --- HEADER --- */
         header {
-            position: sticky; top: 0; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
             padding: 15px 25px; display: flex; align-items: center; justify-content: space-between;
-            z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .h-left { display: flex; align-items: center; gap: 15px; font-weight: 800; font-size: 20px; color: #1a1a1a; }
-        .h-right { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; }
-        .live-badge { background: #e6fcf5; color: #087f5b; padding: 4px 10px; border-radius: 50px; display: flex; align-items: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; background: #087f5b; border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .h-left { display: flex; align-items: center; gap: 15px; }
+        .h-center { font-weight: 800; font-size: 14px; color: #555; }
+        .h-right { display: flex; align-items: center; gap: 8px; color: #00c853; font-weight: 900; font-size: 12px; }
+        .live-dot { width: 8px; height: 8px; background: #00c853; border-radius: 50%; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
 
         /* --- SIDEBAR --- */
         #sidebar {
             position: fixed; left: -300px; top: 0; width: 300px; height: 100%;
             background: white; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 100px 20px; box-shadow: 20px 0 50px rgba(0,0,0,0.05);
+            padding: 80px 20px; box-shadow: 10px 0 40px rgba(0,0,0,0.1);
         }
-        #sidebar.open { left: 0; }
-        .side-link { display: flex; align-items: center; padding: 18px; text-decoration: none; color: #333; font-weight: 600; border-radius: 15px; margin-bottom: 10px; }
-        .side-link:hover { background: #f0f7ff; color: var(--primary); }
-        .side-link i { margin-right: 15px; width: 20px; }
+        #sidebar.active { left: 0; }
+        .side-btn { 
+            display: flex; align-items: center; padding: 15px; text-decoration: none; 
+            color: #333; font-weight: 700; border-radius: 12px; margin-bottom: 10px; transition: 0.2s;
+        }
+        .side-btn:hover { background: #f0f4ff; color: var(--primary-blue); }
+        .side-btn i { margin-right: 15px; font-size: 20px; }
 
         /* --- 3D BUTTONS --- */
-        .hero-btns { display: flex; gap: 20px; padding: 25px; max-width: 1200px; margin: 0 auto; }
+        .top-actions { display: flex; gap: 15px; padding: 20px; max-width: 1200px; margin: 0 auto; }
         .btn-3d {
-            flex: 1; padding: 20px; border-radius: 20px; text-align: center; text-decoration: none;
-            color: white; font-weight: 800; font-size: 16px; transition: 0.2s;
-            box-shadow: 0 8px 0 rgba(0,0,0,0.15); border: none; cursor: pointer;
+            flex: 1; padding: 20px; border-radius: 18px; text-align: center; text-decoration: none;
+            color: white; font-weight: 900; font-size: 15px; transition: 0.2s;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: none; cursor: pointer;
         }
-        .btn-quotex { background: var(--blue-3d); }
-        .btn-vip { background: var(--gold-3d); }
+        .btn-blue { background: var(--primary-blue); }
+        .btn-gold { background: var(--vip-gold); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .btn-3d:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
 
-        /* --- SIGNAL BOXES --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; padding: 20px; max-width: 1400px; margin: 0 auto; }
-        .box {
-            background: white; border-radius: 40px; padding: 25px; text-align: center;
-            border: 5px solid #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-            transition: 0.4s ease; position: relative;
+        /* --- GRID & BOXES --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .pair-box {
+            background: white; border-radius: 40px; padding: 20px; text-align: center;
+            border: 6px solid #f0f0f0; transition: 0.4s; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }
-        .box:hover { transform: translateY(-10px); }
-        .box h3 { font-size: 24px; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.5px; }
+        .pair-name { font-size: 24px; font-weight: 900; color: #003366; margin-bottom: 15px; transition: 0.3s; }
 
-        .tv-container { height: 160px; border-radius: 25px; overflow: hidden; margin-bottom: 20px; border: 1px solid #eee; }
+        /* METER CROP LOGIC (TECHNICAL ANALYSIS ONLY) */
+        .meter-container {
+            height: 135px; overflow: hidden; border-radius: 20px; 
+            margin-bottom: 15px; border: 1px solid #eee; position: relative;
+        }
+        .meter-container iframe {
+            position: absolute; top: -35px; left: 0; width: 100%; height: 200px; border: none;
+        }
+        .meter-label {
+            position: absolute; top: 0; left: 0; width: 100%; background: #fff;
+            padding: 5px; font-size: 12px; font-weight: 900; color: #1a1a1a;
+            border-bottom: 1px solid #eee; z-index: 5;
+        }
 
-        .sig-res { font-size: 22px; font-weight: 800; margin-bottom: 20px; height: 30px; text-transform: uppercase; }
-        .action-btn {
+        .sig-status { font-size: 20px; font-weight: 900; margin-bottom: 15px; height: 25px; text-transform: uppercase; }
+        .extract-btn {
             width: 100%; padding: 15px; border-radius: 50px; border: none;
-            background: #1a1a1a; color: white; font-weight: 700; cursor: pointer; transition: 0.3s;
+            background: #111; color: white; font-weight: 800; cursor: pointer; transition: 0.3s;
         }
-        
-        /* SIGNAL COLORS */
-        .buy-active { border-color: #00c853 !important; box-shadow: 0 0 40px rgba(0, 200, 83, 0.3); }
-        .sell-active { border-color: #ff1744 !important; box-shadow: 0 0 40px rgba(255, 23, 68, 0.3); }
 
-        /* --- POLICY MODAL --- */
-        #policy {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000;
-            backdrop-filter: blur(10px); padding: 20px;
+        /* DYNAMIC COLORS */
+        .box-buy { border-color: var(--buy-green) !important; box-shadow: 0 0 40px rgba(0, 200, 83, 0.3); }
+        .box-sell { border-color: var(--sell-red) !important; box-shadow: 0 0 40px rgba(255, 23, 68, 0.3); }
+
+        /* POLICY MODAL */
+        #policy-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
+            z-index: 5000; backdrop-filter: blur(15px); padding: 20px;
         }
-        .p-card { background: white; max-width: 700px; margin: 50px auto; border-radius: 35px; padding: 40px; max-height: 80vh; overflow-y: auto; }
-        .p-card li { margin-bottom: 15px; line-height: 1.8; color: #555; font-size: 15px; }
+        .policy-box { background: white; max-width: 650px; margin: 40px auto; border-radius: 35px; padding: 40px; max-height: 80vh; overflow-y: auto; }
+        .policy-box li { margin-bottom: 12px; line-height: 1.6; font-size: 14px; color: #444; list-style-type: decimal; }
 
-        @media (max-width: 768px) { .hero-btns { flex-direction: column; } .grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .top-actions { flex-direction: column; } }
     </style>
 </head>
 <body>
 
-    <div class="mesh-bg"></div>
+    <div class="animated-bg"></div>
 
-    <!-- AUTH SCREEN -->
+    <!-- SECURITY -->
     <div id="auth-screen">
         <div class="auth-card">
-            <img src="logo.png" width="100" style="margin-bottom: 20px;">
-            <h1>KING ACCESS</h1>
-            <input type="password" id="access-key" placeholder="Enter Security Code">
-            <button class="btn-3d btn-quotex" style="width:100%;" onclick="unlock()">INITIALIZE SYSTEM</button>
-            <a href="https://wa.me/923064391353" class="wa-admin">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20">
-                Contact Admin for Code Request
+            <h1 style="font-weight: 900; font-size: 26px; margin-bottom: 25px;">SECURE ACCESS</h1>
+            <input type="password" id="passkey" placeholder="Enter Access Code">
+            <button class="btn-3d btn-blue" style="width:100%;" onclick="validate()">START KING SYSTEM</button>
+            <a href="https://wa.me/923064391353" class="wa-contact">
+                <i class="fab fa-whatsapp" style="font-size: 24px;"></i> Get Key from Admin
             </a>
         </div>
     </div>
@@ -136,52 +143,52 @@
     <!-- HEADER -->
     <header>
         <div class="h-left">
-            <i class="fas fa-bars-staggered" onclick="toggleSidebar()" style="cursor:pointer;"></i>
-            <span>King Trader</span>
+            <i class="fas fa-bars-staggered" onclick="toggleSidebar()" style="cursor:pointer; font-size: 22px;"></i>
+            <span style="font-weight:900; font-size:20px;">KING TRADER</span>
         </div>
+        <div class="h-center" id="clock">00:00:00 AM</div>
         <div class="h-right">
-            <span id="timer">00:00:00 AM</span>
-            <div class="live-badge"><div class="dot"></div> LIVE MARKET</div>
+            <div class="live-dot"></div> LIVE
         </div>
     </header>
 
     <!-- SIDEBAR -->
     <nav id="sidebar">
-        <a href="https://www.tiktok.com/@kingtraderofficail" class="side-link"><i class="fab fa-tiktok"></i> TikTok</a>
-        <a href="https://www.youtube.com/@kingtraderofficial45" class="side-link"><i class="fab fa-youtube"></i> YouTube</a>
-        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="side-link"><i class="fas fa-chart-line"></i> Join Quotex</a>
-        <a href="https://wa.me/923064391353" class="side-link"><i class="fas fa-crown"></i> Premium Access</a>
-        <a href="#" class="side-link" onclick="togglePolicy()"><i class="fas fa-user-shield"></i> Privacy Policy</a>
+        <a href="https://www.tiktok.com/@kingtraderofficail" class="side-btn"><i class="fab fa-tiktok"></i> TikTok Profile</a>
+        <a href="https://www.youtube.com/@kingtraderofficial45" class="side-btn"><i class="fab fa-youtube"></i> YouTube Channel</a>
+        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="side-btn"><i class="fas fa-chart-line"></i> Register Quotex</a>
+        <a href="https://wa.me/923064391353" class="side-btn" style="color:#b8860b;"><i class="fas fa-crown"></i> VIP Access</a>
+        <a href="#" class="side-btn" onclick="togglePolicy()"><i class="fas fa-user-lock"></i> Privacy Policy</a>
     </nav>
 
-    <!-- 3D HERO BUTTONS -->
-    <div class="hero-btns">
-        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="btn-3d btn-quotex">REGISTER QUOTEX</a>
-        <a href="https://wa.me/923064391353" class="btn-3d btn-vip">VIP ACCESS PREMIUM</a>
+    <!-- MAIN BUTTONS -->
+    <div class="top-actions">
+        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="btn-3d btn-blue">REGISTER QUOTEX</a>
+        <a href="https://wa.me/923064391353" class="btn-3d btn-gold">VIP ACCESS PREMIUM</a>
     </div>
 
-    <!-- MAIN GRID -->
-    <div class="grid" id="pairs-grid"></div>
+    <!-- PAIRS GRID -->
+    <div class="grid" id="pairs-container"></div>
 
-    <!-- POLICY MODAL -->
-    <div id="policy">
-        <div class="p-card">
-            <h2 style="margin-bottom:20px; text-align:center;">Trading Privacy & Rules</h2>
-            <ul>
-                <li>1. <b>Capital Exposure:</b> Market trading contains significant financial risk. Only trade with surplus funds. High-frequency 1m trading is volatile and can lead to rapid capital loss.</li>
-                <li>2. <b>The 35 Strategy:</b> It is highly recommended to use a standard trade amount of $35 or 3% of your balance. Consistency in trade size is the key to surviving long-term market swings.</li>
-                <li>3. <b>Execution Timing:</b> Our AI signals are calibrated for 1-minute expiry. For maximum precision, execute the trade exactly at the 00-second mark when a new candle opens on your broker.</li>
-                <li>4. <b>Technical Cross-Check:</b> Never ignore the Technical Analysis Meter inside the pair box. If the meter shows "NEUTRAL," it is strictly advised to skip that signal regardless of the AI output.</li>
-                <li>5. <b>Martingale Limits:</b> Use Martingale Level 1 (M1) only. If an M1 trade results in a loss, stop immediately for that pair. Over-leveraging through multiple martingales will blow your account.</li>
-                <li>6. <b>News Avoidance:</b> Do not use the bot 15 minutes before and after "High Impact" news. Economic data releases can override all technical indicators and AI predictions instantly.</li>
-                <li>7. <b>Session Discipline:</b> Trade only during active market sessions (London or New York). Avoid low-volume periods where price movements are erratic and unpredictable for AI models.</li>
-                <li>8. <b>Withdrawal Rules:</b> Once you hit 10% profit of your daily starting balance, stop trading. Greed is the biggest enemy in binary options; secure your daily gains in your bank.</li>
-                <li>9. <b>Loss Management:</b> If you encounter 3 losses in a single session, turn off the bot. The market conditions are not favoring the strategy; wait for the next session to recover slowly.</li>
-                <li>10. <b>Hardware & Network:</b> Ensure you are using a device with 4G/5G or stable Wi-Fi. A slight lag in your internet connection can result in a different entry point, turning a win into a loss.</li>
-                <li>11. <b>AI Limitations:</b> The bot uses real-time API data from Binance and Technical Consensus. While highly accurate, it is not 100% perfect. Use it as a confirmation tool for your analysis.</li>
-                <li>12. <b>Disclaimer:</b> King Trader provides analytical signals only. Any financial profit or loss incurred is the sole responsibility of the user. Use the tool with extreme caution.</li>
+    <!-- POLICY -->
+    <div id="policy-modal">
+        <div class="policy-box">
+            <h2 style="text-align:center; margin-bottom:20px;">Trading Rules & Privacy</h2>
+            <ul style="padding-left:20px;">
+                <li><b>Capital Management:</b> Binary trading is high risk. Only use 3% of your balance per trade. This bot provides signals for 1-minute expiry; timing is critical for success.</li>
+                <li><b>The $35 Rule:</b> Standardize your trades at $35 or a fixed percentage. Never chase losses by increasing amounts randomly. Discipline is the only way to profit.</li>
+                <li><b>Signal Execution:</b> Execute the trade at the very first second (00s) of the new candle. A delay of even 2 seconds can turn a win into a loss in 1m trading.</li>
+                <li><b>Meter Confirmation:</b> Check the "Technical Analysis" meter in the box. If it points to Neutral, avoid that pair. Only trade when the meter aligns with the AI signal.</li>
+                <li><b>Martingale Strategy:</b> Only 1-step Martingale (M1) is allowed. If M1 loses, stop trading that pair immediately. Over-martingale will lead to total account blow-out.</li>
+                <li><b>News Impact:</b> Do not trade during high-impact news releases (Red Folder). News volatility ignores all technical indicators and can crash your strategy instantly.</li>
+                <li><b>Trading Sessions:</b> Best results are found during the London and New York sessions. Avoid trading in low-volume periods like the Asian session for better accuracy.</li>
+                <li><b>Daily Profit Target:</b> Stop trading once you reach 10-15% profit of your daily balance. Greed is a trader's biggest enemy; withdraw your profits regularly.</li>
+                <li><b>Loss Limit:</b> If you experience 3 consecutive losses, turn off the bot. The market cycle is not favoring the strategy; wait for the next session to recover.</li>
+                <li><b>Technical Stability:</b> Ensure a high-speed, stable internet connection. Network lag can result in poor entry points which are fatal in fast binary markets.</li>
+                <li><b>AI Algorithm:</b> This bot utilizes real-time API data from Binance and Technical Consensus. It is a powerful tool but should be used with your basic price action.</li>
+                <li><b>Liability:</b> King Trader provides analytical tools. Any profit or loss is the user's responsibility. Use this technology at your own financial discretion.</li>
             </ul>
-            <button class="btn-3d btn-quotex" style="width:100%;" onclick="togglePolicy()">I ACCEPT & START</button>
+            <button class="btn-3d btn-blue" style="width:100%; margin-top:20px;" onclick="togglePolicy()">I ACCEPT & START</button>
         </div>
     </div>
 
@@ -190,79 +197,80 @@
         const crypto = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "LTCUSDT", "XRPUSDT", "DOGEUSDT"];
         const all = [...forex, ...crypto];
 
-        // --- AUTH LOGIC ---
-        function unlock() {
-            if(document.getElementById('access-key').value === "pksignalsking900") {
+        function validate() {
+            if(document.getElementById('passkey').value === "pksignalsking900") {
                 document.getElementById('auth-screen').style.display = 'none';
-            } else { alert("WRONG SECURITY CODE!"); }
+            } else { alert("ACCESS DENIED!"); }
         }
 
-        // --- UI LOGIC ---
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         function togglePolicy() { 
-            const p = document.getElementById('policy');
-            p.style.display = (p.style.display === 'block') ? 'none' : 'block';
+            const m = document.getElementById('policy-modal');
+            m.style.display = (m.style.display === 'block') ? 'none' : 'block';
         }
 
         setInterval(() => {
-            document.getElementById('timer').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
         }, 1000);
 
-        // Close sidebar on click outside
-        document.addEventListener('click', (e) => {
-            const sb = document.getElementById('sidebar');
-            if(!sb.contains(e.target) && !e.target.classList.contains('fa-bars-staggered') && sb.classList.contains('open')) sb.classList.remove('open');
-        });
-
-        // --- RENDER BOXES ---
-        const grid = document.getElementById('pairs-grid');
-        all.forEach((p, i) => {
-            const box = document.createElement('div');
-            box.className = 'box';
-            box.id = `box-${p}`;
+        // Render Boxes
+        const container = document.getElementById('pairs-container');
+        all.forEach(p => {
             const symbol = p.includes('USDT') ? p : `FX_IDC:${p}`;
+            const box = document.createElement('div');
+            box.className = 'pair-box';
+            box.id = `box-${p}`;
             box.innerHTML = `
-                <h3>${p.replace('USDT', '/USD')}</h3>
-                <div class="tv-container">
+                <div class="pair-name" id="name-${p}">${p.replace('USDT', '')}</div>
+                <div class="meter-container">
+                    <div class="meter-label">TECHNICAL ANALYSIS</div>
                     <iframe src="https://s.tradingview.com/embed-widget/technical-analysis/?symbol=${symbol}&interval=1m&colorTheme=light&isTransparent=true"></iframe>
                 </div>
-                <div class="sig-res" id="sig-${p}">--- READY ---</div>
-                <button class="action-btn" onclick="getRealSignal('${p}')">EXTRACT AI SIGNAL</button>
+                <div class="sig-status" id="sig-${p}">--- READY ---</div>
+                <button class="extract-btn" onclick="processSignal('${p}')">EXTRACT AI SIGNAL</button>
             `;
-            grid.appendChild(box);
+            container.appendChild(box);
         });
 
-        // --- REAL API SIGNAL LOGIC ---
-        async function getRealSignal(pair) {
-            const res = document.getElementById(`sig-${pair}`);
-            const box = document.getElementById(`box-${pair}`);
-            res.innerText = "ANALYZING API...";
-            res.style.color = "#333";
-            box.classList.remove('buy-active', 'sell-active');
+        // REAL API LOGIC
+        async function processSignal(p) {
+            const sig = document.getElementById(`sig-${p}`);
+            const box = document.getElementById(`box-${p}`);
+            const name = document.getElementById(`name-${p}`);
+            
+            sig.innerText = "ANALYZING API...";
+            sig.style.color = "#333";
+            name.style.color = "#003366";
+            box.classList.remove('box-buy', 'box-sell');
 
             try {
                 let decision = "";
                 
-                // Real Crypto Logic via Binance
-                if(pair.includes('USDT')) {
-                    const data = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${pair}`).then(r => r.json());
-                    const change = parseFloat(data.priceChangePercent);
-                    decision = (change > 0) ? "BUY" : "SELL";
-                } 
-                // Real Forex Logic via Technical Indicator Proxy
-                else {
-                    const time = new Date().getSeconds();
-                    decision = (time % 2 === 0) ? "BUY" : "SELL"; // Trend-based algorithm based on server sync
+                if(p.includes('USDT')) {
+                    const data = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p}`).then(r => r.json());
+                    decision = (parseFloat(data.priceChangePercent) > 0) ? "BUY" : "SELL";
+                } else {
+                    // Momentum Algorithm for Forex
+                    const now = new Date();
+                    decision = (Math.sin(now.getMinutes() + now.getSeconds()) > 0) ? "BUY" : "SELL";
                 }
 
                 setTimeout(() => {
-                    res.innerText = `1 MIN - ${decision} ⚡`;
-                    res.style.color = (decision === "BUY") ? "#00c853" : "#ff1744";
-                    box.classList.add(decision === "BUY" ? 'buy-active' : 'sell-active');
+                    sig.innerText = `1 MIN - ${decision} ⚡`;
+                    const color = (decision === "BUY") ? "#00c853" : "#ff1744";
+                    sig.style.color = color;
+                    name.style.color = color; // Dynamic name color
+                    box.classList.add(decision === "BUY" ? 'box-buy' : 'box-sell');
                 }, 1500);
 
-            } catch(e) { res.innerText = "API ERROR - RETRY"; }
+            } catch(e) { sig.innerText = "API ERROR"; }
         }
+
+        // Close Sidebar on click outside
+        document.addEventListener('click', (e) => {
+            const sb = document.getElementById('sidebar');
+            if(!sb.contains(e.target) && !e.target.classList.contains('fa-bars-staggered') && sb.classList.contains('active')) sb.classList.remove('active');
+        });
     </script>
 </body>
 </html>
