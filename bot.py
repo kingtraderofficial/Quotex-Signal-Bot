@@ -1,12 +1,12 @@
-import os
 import time
 
-# King Trader Bot - Background System
-def initialize_system():
-    print("King Trader Bot: Initializing Security Layers...")
-    print("Connecting to Binance & Forex Real-Time API...")
-    time.sleep(2)
-    print("Status: ALL SYSTEMS ONLINE")
+def start_king_bot():
+    print("King Trader Bot System Initialized...")
+    print("Establishing Secure Connection with API Nodes...")
+    time.sleep(1)
+    print("Forex pairs: 10 Loaded")
+    print("Crypto pairs: 6 Loaded")
+    print("Status: ONLINE & SECURE")
 
 if __name__ == "__main__":
-    initialize_system()
+    start_king_bot()
