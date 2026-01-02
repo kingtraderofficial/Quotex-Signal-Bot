@@ -174,7 +174,7 @@
             if(document.getElementById('timer')) document.getElementById('timer').innerText = `${h}:${m}:${s} ${am}`;
         }, 1000);
 
-        const HUB_DATA = { "signals": {} }; //MARKER:TITAN_V22_CORE
+        const HUB_DATA = { "signals": {"EUR/USD": {"sig": "1M PUT \u2193"}, "GBP/USD": {"sig": "1M PUT \u2193"}, "USD/JPY": {"sig": "1M CALL \u2191"}, "AUD/USD": {"sig": "1M CALL \u2191"}, "USD/CAD": {"sig": "1M PUT \u2193"}, "USD/CHF": {"sig": "1M CALL \u2191"}, "NZD/USD": {"sig": "1M CALL \u2191"}, "EUR/GBP": {"sig": "1M PUT \u2193"}, "EUR/JPY": {"sig": "1M CALL \u2191"}, "GBP/JPY": {"sig": "1M PUT \u2193"}, "BTC/USDT": {"sig": "1M PUT \u2193"}, "ETH/USDT": {"sig": "1M CALL \u2191"}, "SOL/USDT": {"sig": "1M PUT \u2193"}, "BNB/USDT": {"sig": "1M PUT \u2193"}, "XRP/USDT": {"sig": "1M PUT \u2193"}, "LTC/USDT": {"sig": "1M PUT \u2193"}} }; //MARKER:TITAN_V22_CORE
 
         const LIST = [
             {n:"EUR/USD", s:"FX:EURUSD"}, {n:"GBP/USD", s:"FX:GBPUSD"}, {n:"USD/JPY", s:"FX:USDJPY"}, {n:"AUD/USD", s:"FX:AUDUSD"},
