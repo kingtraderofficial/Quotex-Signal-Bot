@@ -3,316 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>King Trader Supreme | Real-Base AI</title>
+    <title>King Trader | Pro Logic Bot</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --king-blue: #007AFF; /* Apple Blue */
-            --king-gold: linear-gradient(135deg, #d4af37 0%, #f9d423 100%);
-            --buy-green: #28a745;
-            --sell-red: #dc3545;
-            --shadow-3d: 0 10px 20px rgba(0,0,0,0.1);
+            --king-blue: #007AFF;
+            --king-gold: linear-gradient(135deg, #8a6e2f 0%, #f1d38a 50%, #8a6e2f 100%);
+            --buy: #00c853;
+            --sell: #ff1744;
+            --neutral: #6c757d;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #fdfdfd; min-height: 100vh; overflow-x: hidden; }
+        body { background: #fbfbfd; min-height: 100vh; overflow-x: hidden; }
 
-        /* --- LUXURY ANIMATED BLUR BACKGROUND --- */
-        .glass-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 20% 30%, #e0f2fe 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, #fef3c7 0%, transparent 40%),
-                        radial-gradient(circle at 50% 50%, #fce7f3 0%, transparent 50%);
-            filter: blur(80px); animation: moveBg 20s infinite alternate;
+        /* --- IPHONE ANIMATED BG --- */
+        .animated-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: linear-gradient(45deg, #d4e4ff, #fff1f1, #e8ffed);
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            filter: blur(80px); opacity: 0.6;
         }
-        @keyframes moveBg { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         /* --- SECURITY PAGE --- */
         #auth-screen {
             position: fixed; inset: 0; background: white; z-index: 10000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .auth-card {
-            background: #fff; padding: 50px; border-radius: 40px; text-align: center;
-            box-shadow: 0 20px 60px rgba(0,122,255,0.15); width: 90%; max-width: 420px;
-        }
-        .auth-card input {
-            width: 100%; padding: 20px; border-radius: 20px; border: 2px solid #eee;
-            font-size: 22px; text-align: center; margin-bottom: 25px; outline: none; transition: 0.3s;
-        }
-        .auth-card input:focus { border-color: var(--king-blue); box-shadow: 0 0 15px rgba(0,122,255,0.1); }
-        .wa-btn { 
-            color: #25d366; text-decoration: none; font-weight: 800; display: flex; 
-            align-items: center; justify-content: center; gap: 10px; font-size: 14px;
-        }
+        .auth-card { background: #fff; padding: 40px; border-radius: 30px; text-align: center; box-shadow: 0 10px 50px rgba(0,0,0,0.05); width: 90%; max-width: 400px; }
+        .auth-card input { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #eee; font-size: 20px; text-align: center; margin-bottom: 20px; outline: none; }
+        .wa-contact { color: #25d366; text-decoration: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         /* --- HEADER --- */
         header {
-            background: rgba(255,255,255,0.85); backdrop-filter: blur(25px);
-            padding: 15px 30px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
+            padding: 12px 25px; display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .h-left { display: flex; align-items: center; gap: 20px; font-weight: 900; font-size: 22px; color: #111; }
-        .h-right { display: flex; align-items: center; gap: 12px; font-weight: 800; }
-        .clock { font-size: 16px; color: #555; border-right: 2px solid #ddd; padding-right: 12px; }
-        .live-label { color: #28a745; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
-        .live-dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .h-left { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 18px; }
+        .h-right { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 12px; }
+        .dot { width: 8px; height: 8px; background: #00c853; border-radius: 50%; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
 
         /* --- SIDEBAR --- */
         #sidebar {
             position: fixed; left: -300px; top: 0; width: 300px; height: 100%;
-            background: white; z-index: 2000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 100px 25px; box-shadow: 20px 0 50px rgba(0,0,0,0.05);
+            background: white; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 80px 20px; box-shadow: 10px 0 40px rgba(0,0,0,0.1);
         }
         #sidebar.active { left: 0; }
-        .side-link {
-            display: flex; align-items: center; padding: 18px; text-decoration: none;
-            color: #333; font-weight: 700; border-radius: 18px; margin-bottom: 12px; transition: 0.3s;
-        }
-        .side-link:hover { background: #f0f7ff; color: var(--king-blue); transform: translateX(10px); }
-        .side-link i { margin-right: 15px; font-size: 20px; }
+        .side-btn { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #333; font-weight: 700; border-radius: 12px; margin-bottom: 10px; }
+        .side-btn:hover { background: #f0f4ff; color: var(--king-blue); }
 
-        /* --- SUPREME 3D BUTTONS --- */
-        .hero-section { display: flex; gap: 20px; padding: 30px; max-width: 1200px; margin: 0 auto; }
-        .btn-supreme {
-            flex: 1; padding: 22px; border-radius: 22px; text-align: center; text-decoration: none;
-            color: white; font-weight: 900; font-size: 17px; transition: 0.3s;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.1); position: relative; border: none; cursor: pointer;
+        /* --- 3D BUTTONS --- */
+        .top-actions { display: flex; gap: 15px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .btn-3d {
+            flex: 1; padding: 18px; border-radius: 18px; text-align: center; text-decoration: none;
+            color: white; font-weight: 900; transition: 0.2s; box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: none; cursor: pointer;
         }
-        .btn-blue { background: linear-gradient(135deg, #007AFF 0%, #0051a8 100%); }
-        .btn-gold { background: var(--king-gold); color: #5c4000; }
-        .btn-supreme:hover { transform: translateY(-3px); box-shadow: 0 13px 0 rgba(0,0,0,0.1); }
-        .btn-supreme:active { transform: translateY(6px); box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
+        .btn-blue { background: var(--king-blue); }
+        .btn-gold { background: var(--king-gold); color: #444; }
+        .btn-3d:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
 
-        /* --- SIGNAL BOXES --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 35px; padding: 30px; max-width: 1500px; margin: 0 auto; }
+        /* --- GRID & CARDS --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 25px; padding: 20px; max-width: 1500px; margin: 0 auto; }
         .card {
-            background: white; border-radius: 45px; padding: 25px; text-align: center;
-            border: 6px solid var(--king-blue); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.03); overflow: hidden;
+            background: white; border-radius: 40px; padding: 22px; text-align: center;
+            border: 5px solid var(--king-blue); transition: 0.4s; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
         }
-        .pair-label { font-size: 26px; font-weight: 900; color: var(--king-blue); margin-bottom: 20px; transition: 0.3s; }
+        .pair-label { font-size: 22px; font-weight: 900; color: var(--king-blue); margin-bottom: 12px; transition: 0.3s; }
 
-        /* METER CROP FIX (NO SCROLL) */
-        .meter-wrap {
-            height: 140px; border-radius: 25px; overflow: hidden; margin-bottom: 15px;
-            position: relative; border: 1px solid #f0f0f0; background: #fafafa;
+        /* METER NO SCROLL FIX */
+        .meter-box {
+            height: 140px; border-radius: 20px; overflow: hidden; margin-bottom: 15px;
+            position: relative; border: 1px solid #eee;
         }
-        .meter-wrap iframe {
-            position: absolute; top: -38px; left: 0; width: 100%; height: 210px; border: none;
-        }
-        .meter-head { font-size: 11px; font-weight: 900; background: #fff; padding: 5px; color: #111; border-bottom: 1px solid #eee; position: relative; z-index: 10; }
+        .meter-box iframe { position: absolute; top: -38px; left: 0; width: 100%; height: 215px; border: none; pointer-events: none; }
 
-        .sig-box { font-size: 22px; font-weight: 900; margin-bottom: 20px; min-height: 30px; letter-spacing: 1px; }
+        .sig-display { font-size: 14px; font-weight: 800; margin-bottom: 15px; min-height: 45px; display: flex; align-items: center; justify-content: center; }
         .extract-btn {
-            width: 100%; padding: 18px; border-radius: 50px; border: none;
-            background: #111; color: white; font-weight: 800; cursor: pointer; transition: 0.4s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%; padding: 15px; border-radius: 50px; border: none;
+            background: #111; color: white; font-weight: 800; cursor: pointer; transition: 0.3s;
         }
-        .extract-btn:hover { background: #333; transform: scale(1.02); }
+        .extract-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* GIFT: ACCURACY INDICATOR */
-        .accuracy-bar { height: 6px; background: #eee; border-radius: 10px; margin-top: 15px; overflow: hidden; display: none; }
-        .accuracy-fill { height: 100%; background: #28a745; width: 0%; transition: 1.5s; }
-        .acc-text { font-size: 10px; font-weight: 800; color: #888; margin-top: 5px; display: none; }
+        /* COLORS */
+        .card-buy { border-color: var(--buy) !important; box-shadow: 0 0 30px rgba(0, 200, 83, 0.3); }
+        .card-sell { border-color: var(--sell) !important; box-shadow: 0 0 30px rgba(255, 23, 68, 0.3); }
+        .card-assist { border-color: var(--neutral) !important; }
 
-        /* DYNAMIC COLORS */
-        .card-buy { border-color: var(--buy-green) !important; box-shadow: 0 0 50px rgba(40, 167, 69, 0.35); }
-        .card-sell { border-color: var(--sell-red) !important; box-shadow: 0 0 50px rgba(220, 53, 69, 0.35); }
-
-        /* POLICY MODAL */
+        /* MODAL */
         #policy-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); 
-            z-index: 5000; backdrop-filter: blur(20px); padding: 25px;
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000;
+            backdrop-filter: blur(15px); padding: 20px;
         }
-        .policy-content { background: white; max-width: 700px; margin: 40px auto; border-radius: 40px; padding: 45px; max-height: 80vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
-        .policy-content h2 { color: var(--king-blue); margin-bottom: 25px; text-align: center; font-weight: 900; }
-        .policy-content li { margin-bottom: 15px; line-height: 1.7; font-size: 15px; color: #444; }
-
-        @media (max-width: 768px) { .hero-section { flex-direction: column; } }
+        .policy-box { background: white; max-width: 650px; margin: 40px auto; border-radius: 35px; padding: 40px; max-height: 80vh; overflow-y: auto; }
+        .policy-box li { margin-bottom: 12px; line-height: 1.5; font-size: 14px; color: #444; }
     </style>
 </head>
 <body>
 
-    <div class="glass-bg"></div>
+    <div class="animated-bg"></div>
 
-    <!-- AUTHENTICATION -->
+    <!-- SECURITY -->
     <div id="auth-screen">
         <div class="auth-card">
-            <h1 style="font-weight: 900; margin-bottom: 10px;">KING ACCESS</h1>
-            <p style="color: #888; margin-bottom: 30px; font-size: 14px;">Secure Terminal v4.0</p>
-            <input type="password" id="access-pass" placeholder="Enter Security Code">
-            <button class="btn-supreme btn-blue" style="width:100%;" onclick="startSystem()">UNBLOCK SYSTEM</button>
-            <a href="https://wa.me/923064391353" class="wa-btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="22">
-                Contact Admin for Access Code
-            </a>
+            <h1 style="font-weight: 900; margin-bottom: 25px;">KING BOT ACCESS</h1>
+            <input type="password" id="access-key" placeholder="Enter Security Code">
+            <button class="btn-3d btn-blue" style="width: 100%;" onclick="unlock()">START TERMINAL</button>
+            <a href="https://wa.me/923064391353" class="wa-contact"><i class="fab fa-whatsapp"></i> Get Key from Admin</a>
         </div>
     </div>
 
     <!-- HEADER -->
     <header>
         <div class="h-left">
-            <i class="fas fa-bars-staggered" onclick="toggleSidebar()" style="cursor:pointer;"></i>
+            <i class="fas fa-bars-staggered" onclick="toggleSidebar()" style="cursor:pointer; font-size: 22px;"></i>
             <span>King Trader</span>
         </div>
+        <div id="clock" style="font-weight: 800; font-size: 14px;">00:00:00 AM</div>
         <div class="h-right">
-            <div class="clock" id="digital-clock">00:00:00 AM</div>
-            <div class="live-label"><div class="live-dot"></div> LIVE</div>
+            <div class="dot"></div> <span style="color:#00c853;">LIVE</span>
         </div>
     </header>
 
     <!-- SIDEBAR -->
     <nav id="sidebar">
-        <a href="https://www.tiktok.com/@kingtraderofficail" class="side-link"><i class="fab fa-tiktok"></i> TikTok</a>
-        <a href="https://www.youtube.com/@kingtraderofficial45" class="side-link"><i class="fab fa-youtube"></i> YouTube</a>
-        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="side-link"><i class="fas fa-chart-line"></i> Register Quotex</a>
-        <a href="https://wa.me/923064391353" class="side-link" style="color:#b8860b;"><i class="fas fa-crown"></i> VIP Premium Access</a>
-        <a href="#" class="side-link" onclick="togglePolicy()"><i class="fas fa-user-shield"></i> Terms & Rules</a>
+        <a href="https://www.tiktok.com/@kingtraderofficail" class="side-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="https://www.youtube.com/@kingtraderofficial45" class="side-btn"><i class="fab fa-youtube"></i> YouTube</a>
+        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="side-btn"><i class="fas fa-chart-line"></i> Register Quotex</a>
+        <a href="https://wa.me/923064391353" class="side-btn" style="color:#b8860b;"><i class="fas fa-crown"></i> VIP Access</a>
+        <a href="#" class="side-btn" onclick="togglePolicy()"><i class="fas fa-user-lock"></i> Terms & Policy</a>
     </nav>
 
-    <!-- MAIN BUTTONS -->
-    <div class="hero-section">
-        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="btn-supreme btn-blue">REGISTER QUOTEX</a>
-        <a href="https://wa.me/923064391353" class="btn-supreme btn-gold">VIP ACCESS PREMIUM</a>
+    <!-- TOP BUTTONS -->
+    <div class="top-actions">
+        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="btn-3d btn-blue">REGISTER QUOTEX</a>
+        <a href="https://wa.me/923064391353" class="btn-3d btn-gold">VIP ACCESS PREMIUM</a>
     </div>
 
-    <!-- PAIRS GRID -->
-    <div class="grid" id="grid-container"></div>
+    <!-- GRID -->
+    <div class="grid" id="main-grid"></div>
 
-    <!-- POLICY MODAL -->
+    <!-- MODAL -->
     <div id="policy-modal">
-        <div class="policy-content">
-            <h2>King Trader Rules</h2>
-            <ul>
-                <li>1. <b>Financial Risk Warning:</b> Trading Binary Options involves high financial risk. Never invest money that you are not prepared to lose. This bot is for analytical support only.</li>
-                <li>2. <b>Capital Management ($35 Rule):</b> We recommend a fixed trade amount of $35 or a strict 3% of your balance. Consistent stakes prevent rapid account blowouts during bad market phases.</li>
-                <li>3. <b>Perfect Timing:</b> Accuracy is 100% dependent on entry time. Place your trade exactly at the 00-second mark of a new 1-minute candle. Avoid late entries as they turn wins into losses.</li>
-                <li>4. <b>Technical Alignment:</b> Always monitor the "Technical Analysis" meter in each box. If the meter points to 'Neutral', skip the signal. Only trade when the AI and Meter both agree.</li>
-                <li>5. <b>Strict Martingale Limit:</b> Only 1-Step Martingale (M1) is recommended. If the M1 trade fails, stop immediately for that pair. Never go for M2 or higher as it can wipe your entire capital.</li>
-                <li>6. <b>News Blackout:</b> Do not use the bot 15 minutes before and after high-impact economic news (Red Folders). News events create unpredictable price spikes that no AI can predict.</li>
-                <li>7. <b>Market Sessions:</b> Trading is most accurate during the London and New York overlaps. Avoid trading in the Asian session or during bank holidays when liquidity is low and movements are erratic.</li>
-                <li>8. <b>Profit Booking:</b> Discipline is key. Once you hit a 10% profit of your total daily balance, stop trading. Secure your gains and withdraw. Do not let greed take over your trading plan.</li>
-                <li>9. <b>Three Strikes Rule:</b> If you encounter 3 losses in a single trading session, close the bot. The market cycle is not favoring the algorithm. Take a break and come back after 4-6 hours.</li>
-                <li>10. <b>Connectivity & Hardware:</b> Use a stable high-speed internet connection. A laggy network can cause slippage on your broker platform, resulting in an unfavorable entry price.</li>
-                <li>11. <b>AI Signal Logic:</b> Our Supreme AI uses real-time API clusters from Binance and global Technical Consensus. It analyzes price momentum, volume, and volatility before giving a signal.</li>
-                <li>12. <b>Disclaimer:</b> King Trader provides high-probability analysis. However, market results are not guaranteed. Users are solely responsible for their financial decisions and results.</li>
+        <div class="policy-box">
+            <h2 style="text-align: center; margin-bottom: 20px;">Trading Rules</h2>
+            <ul style="padding-left: 20px;">
+                <li>1. <b>Strict Risk:</b> Binary trading is high risk. Only risk 2% of your balance per trade.</li>
+                <li>2. <b>Amount:</b> Standardize trades at $35. Discipline is key.</li>
+                <li>3. <b>Timing:</b> Execute Crypto signals exactly at the 00s candle start.</li>
+                <li>4. <b>Forex Assist:</b> Follow meter strictly. Do not trade if meter is Neutral.</li>
+                <li>5. <b>Cooldown:</b> Respect the 2-minute cooldown to avoid emotional trading.</li>
+                <li>6. <b>Single Signal:</b> Only one active signal allowed globally to ensure focus.</li>
+                <li>7. <b>Martingale:</b> Only 1-step (M1) is recommended. Stop after that.</li>
+                <li>8. <b>News:</b> Do not trade 15m before/after Red Folder news events.</li>
+                <li>9. <b>Sessions:</b> Best results during London & New York overlaps.</li>
+                <li>10. <b>Targets:</b> Close the bot after hitting 10% daily profit.</li>
+                <li>11. <b>Loss Limit:</b> Stop for the day if you hit 3 consecutive losses.</li>
+                <li>12. <b>Disclaimer:</b> King Trader provides analysis. You are responsible for all results.</li>
             </ul>
-            <button class="btn-supreme btn-blue" style="width:100%; margin-top: 30px;" onclick="togglePolicy()">ACCEPT & CONTINUE</button>
+            <button class="btn-3d btn-blue" style="width: 100%; margin-top: 20px;" onclick="togglePolicy()">ACCEPT</button>
         </div>
     </div>
 
     <script>
         const forex = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "EURJPY", "EURGBP", "AUDJPY", "NZDUSD", "USDCHF"];
         const crypto = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "LTCUSDT", "XRPUSDT", "DOGEUSDT"];
-        const allPairs = [...forex, ...crypto];
+        const all = [...forex, ...crypto];
+        
+        // GLOBAL LOCKS
+        let globalSignalActive = false;
+        let cooldowns = {};
 
-        // Security Check
-        function startSystem() {
-            if(document.getElementById('access-pass').value === "pksignalsking900") {
+        function unlock() {
+            if(btoa(document.getElementById('access-key').value) === "cGtzaWduYWxza2luZzkwMA==") {
                 document.getElementById('auth-screen').style.display = 'none';
-            } else { alert("WRONG ACCESS KEY!"); }
+            } else { alert("WRONG KEY!"); }
         }
 
-        // UI Controls
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         function togglePolicy() { 
             const m = document.getElementById('policy-modal');
             m.style.display = (m.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Clock
         setInterval(() => {
-            document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
         }, 1000);
 
-        // Sidebar click-away fix
-        document.addEventListener('click', (e) => {
-            const sb = document.getElementById('sidebar');
-            if(!sb.contains(e.target) && !e.target.classList.contains('fa-bars-staggered') && sb.classList.contains('active')) sb.classList.remove('active');
-        });
-
-        // Initialize Boxes
-        const container = document.getElementById('grid-container');
-        allPairs.forEach(p => {
+        const grid = document.getElementById('main-grid');
+        all.forEach(p => {
             const sym = p.includes('USDT') ? p : `FX_IDC:${p}`;
+            const isCrypto = p.includes('USDT');
             const box = document.createElement('div');
             box.className = 'card';
             box.id = `card-${p}`;
             box.innerHTML = `
                 <div class="pair-label" id="label-${p}">${p.replace('USDT', '')}</div>
-                <div class="meter-wrap">
-                    <div class="meter-head">TECHNICAL ANALYSIS</div>
+                <div class="meter-box">
                     <iframe src="https://s.tradingview.com/embed-widget/technical-analysis/?symbol=${sym}&interval=1m&colorTheme=light&isTransparent=true"></iframe>
                 </div>
-                <div class="sig-box" id="sig-${p}">--- READY ---</div>
-                <button class="extract-btn" onclick="fetchSupremeSignal('${p}')">EXTRACT AI SIGNAL</button>
-                <div class="accuracy-bar" id="bar-wrap-${p}"><div class="accuracy-fill" id="fill-${p}"></div></div>
-                <div class="acc-text" id="acc-txt-${p}">STRENGTH: 0%</div>
+                <div class="sig-display" id="sig-${p}">--- READY ---</div>
+                <button class="extract-btn" id="btn-${p}" onclick="processRequest('${p}', ${isCrypto})">EXTRACT SIGNAL</button>
             `;
-            container.appendChild(box);
+            grid.appendChild(box);
         });
 
-        // SUPREME SIGNAL LOGIC (NO RANDOM)
-        async function fetchSupremeSignal(p) {
-            const sigText = document.getElementById(`sig-${p}`);
-            const card = document.getElementById(`card-${p}`);
-            const label = document.getElementById(`label-${p}`);
-            const fill = document.getElementById(`fill-${p}`);
-            const bar = document.getElementById(`bar-wrap-${p}`);
-            const accTxt = document.getElementById(`acc-txt-${p}`);
+        async function processRequest(pair, isCrypto) {
+            if(globalSignalActive) { alert("Another signal is active. Please wait!"); return; }
+            const now = Date.now();
+            if(cooldowns[pair] && now < cooldowns[pair]) {
+                const wait = Math.ceil((cooldowns[pair] - now) / 1000);
+                alert(`Cooldown! Wait ${wait}s for this pair.`); return;
+            }
 
-            sigText.innerText = "CONNECTING API...";
-            sigText.style.color = "#333";
-            label.style.color = "var(--king-blue)";
-            card.classList.remove('card-buy', 'card-sell');
-            bar.style.display = 'none';
-            accTxt.style.display = 'none';
+            globalSignalActive = true;
+            disableAll(true);
+            const sigBox = document.getElementById(`sig-${pair}`);
+            const card = document.getElementById(`card-${pair}`);
+            const label = document.getElementById(`label-${pair}`);
 
-            try {
-                let signal = "";
-                let strength = 0;
-
-                // REAL CRYPTO LOGIC (Binance)
-                if(p.includes('USDT')) {
-                    const data = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p}`).then(r => r.json());
-                    const change = parseFloat(data.priceChangePercent);
-                    signal = (change > 0) ? "BUY" : "SELL";
-                    strength = Math.abs(change) * 50 + 40; // Logic based on trend strength
-                } 
-                // REAL FOREX LOGIC (Market Momentum Consensus)
-                else {
-                    // Calculating signal based on real-time market drift (Synchronized with global tickers)
-                    const time = new Date();
-                    const consensus = Math.sin(time.getMinutes() + time.getSeconds());
-                    signal = (consensus > 0) ? "BUY" : "SELL";
-                    strength = Math.abs(consensus) * 30 + 65; 
-                }
-
-                if(strength > 95) strength = 94.5; // Keeping it realistic
-
-                setTimeout(() => {
-                    const color = (signal === "BUY") ? "var(--buy-green)" : "var(--sell-red)";
-                    sigText.innerText = `1 MIN - ${signal} ⚡`;
-                    sigText.style.color = color;
-                    label.style.color = color;
-                    card.classList.add(signal === "BUY" ? 'card-buy' : 'card-sell');
+            if(isCrypto) {
+                // REAL CRYPTO LOGIC (1m Candles)
+                sigBox.innerText = "FETCHING BINANCE DATA...";
+                try {
+                    const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${pair}&interval=1m&limit=1`).then(r => r.json());
+                    const candle = res[0];
+                    const open = parseFloat(candle[1]);
+                    const close = parseFloat(candle[4]);
+                    const decision = (close > open) ? "BUY ⬆️" : "SELL ⬇️";
                     
-                    // Gift: Show Strength
-                    bar.style.display = 'block';
-                    accTxt.style.display = 'block';
                     setTimeout(() => {
-                        fill.style.width = strength + "%";
-                        accTxt.innerText = `SIGNAL STRENGTH: ${strength.toFixed(1)}%`;
-                        fill.style.backgroundColor = color;
-                    }, 100);
-
+                        const color = (close > open) ? "var(--buy)" : "var(--sell)";
+                        sigBox.innerText = `1 MIN - ${decision}`;
+                        sigBox.style.color = color;
+                        label.style.color = color;
+                        card.classList.add((close > open) ? 'card-buy' : 'card-sell');
+                        finishAction(pair, 120000); // 2m cooldown
+                    }, 1500);
+                } catch(e) { sigBox.innerText = "API ERROR"; resetSystem(); }
+            } else {
+                // FOREX ASSIST MODE
+                sigBox.innerText = "ANALYZING METER...";
+                setTimeout(() => {
+                    sigBox.style.fontSize = "10px";
+                    sigBox.style.color = "#555";
+                    sigBox.innerText = "FOLLOW STRONG SELL/BUY meter ke hisaab se ager meter neutral ha to random aur metter strong sell pr ha to sell and ager storong buy pr ha to buy ager only sell pr ha to last 3 candle and buy pr ha to same last 3 candle";
+                    card.classList.add('card-assist');
+                    finishAction(pair, 60000); // 1m for forex assist
                 }, 1500);
-
-            } catch(e) { sigText.innerText = "API ERROR - RETRY"; }
+            }
         }
+
+        function finishAction(pair, time) {
+            cooldowns[pair] = Date.now() + time;
+            setTimeout(() => {
+                resetPairUI(pair);
+                globalSignalActive = false;
+                disableAll(false);
+            }, 5000); // Display signal for 5s then free system
+        }
+
+        function disableAll(status) {
+            const btns = document.querySelectorAll('.extract-btn');
+            btns.forEach(b => b.disabled = status);
+        }
+
+        function resetPairUI(pair) {
+            const card = document.getElementById(`card-${pair}`);
+            const sigBox = document.getElementById(`sig-${pair}`);
+            const label = document.getElementById(`label-${pair}`);
+            card.classList.remove('card-buy', 'card-sell', 'card-assist');
+            sigBox.innerText = "--- READY ---";
+            sigBox.style.color = "#333";
+            sigBox.style.fontSize = "14px";
+            label.style.color = "var(--king-blue)";
+        }
+
+        function resetSystem() { globalSignalActive = false; disableAll(false); }
+
+        document.addEventListener('click', (e) => {
+            const sb = document.getElementById('sidebar');
+            if(!sb.contains(e.target) && !e.target.classList.contains('fa-bars-staggered') && sb.classList.contains('active')) sb.classList.remove('active');
+        });
     </script>
 </body>
 </html>
