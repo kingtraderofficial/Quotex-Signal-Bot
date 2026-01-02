@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KING TRADER | TITAN CORE V20</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0052ff; --success: #00c853; --danger: #ff1744;
+            --bg: #f8fafc; --text: #0f172a; --bezel: #0052ff;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; text-decoration: none !important; transition: all 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: var(--text); margin: 0; padding: 0; user-select: none; overflow-x: hidden; }
+
+        /* iPhone Liquid Wallpaper */
+        .liquid-bg { position: fixed; inset: 0; z-index: -1; background: linear-gradient(45deg, #c3dafe, #fbcfe8, #e9d5ff, #fef3c7); background-size: 400% 400%; animation: liquidMove 15s ease infinite; filter: blur(80px); }
+        @keyframes liquidMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* Auth Gate */
+        #auth-gate { position: fixed; inset: 0; background: #fff; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .auth-card { width: 90%; max-width: 380px; padding: 40px 25px; border-radius: 40px; border: 4px solid var(--primary); text-align: center; box-shadow: 0 0 30px rgba(0, 82, 255, 0.1); }
+        .auth-card input { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #ddd; text-align: center; font-size: 1.4rem; margin: 20px 0; font-weight: 800; color: var(--primary); }
+        .auth-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--primary); color: white; font-weight: 900; font-size: 1.2rem; cursor: pointer; }
+
+        /* 5s Handshake Calibration */
+        #sync-gate { position: fixed; inset: 0; background: #fff; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .sync-ring { width: 70px; height: 70px; border: 6px solid #f3f3f3; border-top: 6px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Sidebar System */
+        #sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); z-index: 10001; transition: 0.4s; border-left: 5px solid var(--primary); padding: 30px 20px; overflow-y: auto; }
+        #sidebar.open { right: 0; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 10000; display: none; }
+        .overlay.open { display: block; }
+        .side-head { font-family: Montserrat; font-weight: 900; color: var(--primary); font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .side-link { display: flex; align-items: center; gap: 12px; padding: 15px 0; color: var(--text); font-weight: 700; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 14px; }
+
+        /* Header */
+        #main-shell { display: none; }
+        header { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 9998; }
+        header h1 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: var(--primary); margin: 0; font-weight: 900; }
+        .clock { font-family: monospace; font-size: 12px; font-weight: 700; color: #64748b; }
+
+        .container { padding: 15px; max-width: 800px; margin: auto; }
+
+        /* PREMIUM SMARTPHONE CARD (10% Smaller) */
+        .card {
+            background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(15px);
+            border-radius: 40px; margin-bottom: 20px; padding: 15px;
+            /* Smartphone Bezel */
+            border-left: 3px solid var(--bezel); border-right: 3px solid var(--bezel);
+            border-top: 15px solid var(--bezel); border-bottom: 15px solid var(--bezel);
+            transition: all 0.4s ease; position: relative;
+        }
+        .card.active-call { border-color: var(--success) !important; box-shadow: 0 0 25px var(--success); }
+        .card.active-put { border-color: var(--danger) !important; box-shadow: 0 0 25px var(--danger); }
+
+        .meter-box { height: 350px; border-radius: 20px; overflow: hidden; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05); }
+
+        .result-view { display: none; padding: 15px; border-radius: 15px; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 900; margin-bottom: 15px; animation: pop 0.3s; }
+        @keyframes pop { from { scale: 0.8; } to { scale: 1; } }
+        .res-call { color: var(--success); }
+        .res-put { color: var(--danger); }
+
+        .btn-neural { width: 100%; padding: 18px; border-radius: 50px; border: none; background: var(--primary); color: white; font-family: 'Montserrat', sans-serif; font-weight: 900; cursor: pointer; }
+
+        .p-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .p-btn { padding: 12px; border-radius: 15px; text-align: center; font-weight: 800; font-size: 11px; color: white; cursor: pointer; }
+        .bg-gold { background: linear-gradient(90deg, #b8860b, #ffd700); }
+        .bg-blue { background: var(--primary); }
+
+        .scanner { height: 5px; background: var(--primary); width: 100%; position: absolute; top: 0; left: 0; display: none; animation: scanAnim 2s infinite linear; opacity: 0.7; z-index: 100; }
+        @keyframes scanAnim { 0% { top: 5%; } 100% { top: 90%; } }
+
+        .wa-float { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 35px; box-shadow: 0 15px 30px rgba(0,0,0,0.15); z-index: 9998; border: none !important; }
+    </style>
+</head>
+<body>
+    <div class="liquid-bg"></div>
+
+    <!-- Login -->
+    <div id="auth-gate">
+        <div class="auth-card">
+            <h2 style="font-family: Montserrat; font-weight: 900; color: var(--primary); margin:0;">KING TRADER</h2>
+            <input type="password" id="pass_key" placeholder="ACCESS KEY">
+            <button class="auth-btn" onclick="verify()">AUTHENTICATE</button>
+            <a href="https://wa.me/923064391353" style="margin-top:20px; display:inline-block; color:#25D366; font-weight:800; font-size: 14px;">REQUEST HUB ACCESS</a>
+        </div>
+    </div>
+
+    <!-- 5s Sync Screen -->
+    <div id="sync-gate">
+        <div class="sync-ring"></div>
+        <h2 style="margin-top:25px; font-family:Montserrat; color:var(--primary)">QUANTUM CALIBRATION</h2>
+        <p style="color:#64748b; font-weight:700">Verifying Neural Node V20...</p>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="overlay" onclick="toggleMenu()"></div>
+    <div id="sidebar">
+        <div class="side-head">SYSTEM CORE</div>
+        <div class="side-link" onclick="window.open('https://www.tiktok.com/@your_id')"><i class="fab fa-tiktok"></i> OFFICIAL TIKTOK</div>
+        <div class="side-link" onclick="window.open('https://youtube.com/@your_id')"><i class="fab fa-youtube"></i> YOUTUBE HUB</div>
+        <div class="side-link" onclick="window.open('https://broker-qx.pro/sign-up/?lid=your_id')"><i class="fas fa-users"></i> JOIN QUOTEX TEAM</div>
+        <div class="side-link" onclick="window.open('https://wa.me/923064391353')"><i class="fas fa-crown"></i> VIP ACCESS</div>
+        
+        <div class="side-head" style="margin-top:35px">TRADING POLICY</div>
+        <div style="font-size:11px; color:#64748b; line-height:2;">
+            1. Risk management is priority; max 2% per trade.<br>
+            2. Binary markets carry high financial risk levels.<br>
+            3. AI signals are analytical probabilistic data.<br>
+            4. Max 5-7 signals per session recommended.<br>
+            5. Avoid trading during high-impact economic news.<br>
+            6. Fiber or 5G internet connection is mandatory.<br>
+            7. Signals optimized strictly for 1-minute expiry.<br>
+            8. Only compound generated profits, never capital.<br>
+            9. VIP channel offers higher precision logic.<br>
+            10. We are not liable for any financial losses.
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-shell">
+        <header>
+            <h1>KING TRADER</h1>
+            <div class="clock" id="timer">00:00:00 AM</div>
+            <i class="fas fa-bars" style="color:var(--primary); font-size:22px; cursor:pointer;" onclick="toggleMenu()"></i>
+        </header>
+        <div class="container">
+            <div class="p-row">
+                <div class="p-btn bg-gold" onclick="window.open('https://broker-qx.pro/sign-up/?lid=your_id')">VIP SIGNALS</div>
+                <div class="p-btn bg-blue" onclick="window.open('https://wa.me/923064391353')">PAID CHANNEL</div>
+            </div>
+            <div id="hub-grid"></div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/923064391353" class="wa-float"><i class="fab fa-whatsapp"></i></a>
+
+    <script>
+        function verify() {
+            if(document.getElementById('pass_key').value === "pksignalsking900") {
+                document.getElementById('auth-gate').style.display = 'none';
+                document.getElementById('sync-gate').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('sync-gate').style.display = 'none';
+                    document.getElementById('main-shell').style.display = 'block';
+                    render();
+                }, 5000);
+            } else { alert("WRONG KEY"); }
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.querySelector('.overlay').classList.toggle('open');
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            let am = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+            m = (m<10?'0':'')+m; s = (s<10?'0':'')+s;
+            if(document.getElementById('timer')) document.getElementById('timer').innerText = `${h}:${m}:${s} ${am}`;
+        }, 1000);
+
+        const HUB_DATA = { "signals": {} }; //MARKER:V20_ELITE
+
+        const LIST = [
+            {n:"EUR/USD", s:"FX:EURUSD"}, {n:"GBP/USD", s:"FX:GBPUSD"}, {n:"USD/JPY", s:"FX:USDJPY"}, {n:"AUD/USD", s:"FX:AUDUSD"},
+            {n:"USD/CAD", s:"FX:USDCAD"}, {n:"USD/CHF", s:"FX:USDCHF"}, {n:"NZD/USD", s:"FX:NZDUSD"}, {n:"EUR/GBP", s:"FX:EURGBP"},
+            {n:"EUR/JPY", s:"FX:EURJPY"}, {n:"GBP/JPY", s:"FX:GBPJPY"}, {n:"BTC/USDT", s:"BINANCE:BTCUSDT"}, {n:"ETH/USDT", s:"BINANCE:ETHUSDT"},
+            {n:"SOL/USDT", s:"BINANCE:SOLUSDT"}, {n:"BNB/USDT", s:"BINANCE:BNBUSDT"}, {n:"XRP/USDT", s:"BINANCE:XRPUSDT"}, {n:"LTC/USDT", s:"BINANCE:LTCUSDT"}
+        ];
+
+        function render() {
+            const grid = document.getElementById('hub-grid');
+            grid.innerHTML = "";
+            LIST.forEach((a, i) => {
+                const card = document.createElement('div');
+                card.className = 'card'; card.id = `card-${i}`;
+                card.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span style="font-weight:900;">${a.n}</span><span style="font-size:9px;color:var(--primary);font-weight:900;">TITAN V20</span></div>
+                    <div class="meter-box" id="meter-${i}"></div>
+                    <div class="scanner" id="scan-${i}"></div>
+                    <div class="result-view" id="res-${i}"></div>
+                    <button class="btn-extract" id="btn-${i}" onclick="extract(${i}, '${a.n}')">EXTRACT SIGNAL</button>
+                `;
+                grid.appendChild(card);
+                const s = document.createElement('script');
+                s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+                s.async = true; s.innerHTML = JSON.stringify({"interval":"1m","width":"100%","isTransparent":true,"height":"100%","symbol":a.s,"showIntervalTabs":false,"locale":"en","colorTheme":"light"});
+                document.getElementById(`meter-${i}`).appendChild(s);
+            });
+        }
+
+        function extract(idx, name) {
+            const btn = document.getElementById(`btn-${idx}`), res = document.getElementById(`res-${idx}`),
+                  scan = document.getElementById(`scan-${idx}`), card = document.getElementById(`card-${idx}`);
+            btn.disabled = true; res.style.display = "none"; scan.style.display = "block"; card.className = "card";
+            const data = HUB_DATA.signals[name];
+            setTimeout(() => {
+                scan.style.display = "none";
+                if(data) {
+                    res.innerText = data.sig;
+                    res.className = "result-view " + (data.sig.includes("CALL") ? "res-call" : "res-put");
+                    card.className = "card active-" + (data.sig.includes("CALL") ? "call" : "put");
+                    res.style.display = "block";
+                } else { alert("Syncing Hub... Retry in 30s"); }
+                btn.disabled = false;
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
