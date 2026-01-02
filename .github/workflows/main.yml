@@ -1,4 +1,4 @@
-name: NeuralSyncV20
+name: NeuralSyncV22
 on:
   schedule:
     - cron: '*/30 * * * *'
@@ -19,12 +19,11 @@ jobs:
       - name: Run Engine
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FOREX_API_KEY: ${{ secrets.FOREX_API_KEY }}
         run: python bot.py
-      - name: Push Updates
+      - name: Commit & Push
         run: |
-          git config --global user.name "V20-Bot"
+          git config --global user.name "Titan-Bot"
           git config --global user.email "bot@github.com"
           git add index.html
-          git commit -m "V20 Neural Market Sync" || echo "No changes"
+          git commit -m "V22 Neural Titan Hub Update" || echo "No changes"
           git push
