@@ -1,12 +1,13 @@
 import time
 
-def start_king_bot():
-    print("King Trader Bot System Initialized...")
-    print("Establishing Secure Connection with API Nodes...")
-    time.sleep(1)
-    print("Forex pairs: 10 Loaded")
-    print("Crypto pairs: 6 Loaded")
-    print("Status: ONLINE & SECURE")
+def boot_system():
+    print("---------------------------------")
+    print(" KING TRADER PRO BOT INITIALIZED ")
+    print("---------------------------------")
+    print("Status: SECURE (Encrypted)")
+    print("Network: ONLINE (HD API)")
+    print("Pairs: 16 (10 Forex / 6 Crypto)")
+    print("---------------------------------")
 
 if __name__ == "__main__":
-    start_king_bot()
+    boot_system()
