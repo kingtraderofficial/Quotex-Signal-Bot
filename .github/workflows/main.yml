@@ -1,0 +1,30 @@
+name: NeuralSyncV20
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Libs
+        run: pip install google-generativeai yfinance
+      - name: Run Engine
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FOREX_API_KEY: ${{ secrets.FOREX_API_KEY }}
+        run: python bot.py
+      - name: Push Updates
+        run: |
+          git config --global user.name "V20-Bot"
+          git config --global user.email "bot@github.com"
+          git add index.html
+          git commit -m "V20 Neural Market Sync" || echo "No changes"
+          git push
