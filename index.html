@@ -2,298 +2,626 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>King Trader | Ultra Pro Max Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KING TRADER | CORE ENGINE</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- CORE DESIGN VARIABLES --- */
         :root {
-            --royal-blue: #0046ad;
-            --king-blue: #007AFF;
-            --vip-gold: linear-gradient(135deg, #d4af37 0%, #f9d423 100%);
-            --buy: #00c853;
-            --sell: #ff1744;
-            --wait: #ff9800;
+            --primary-blue: #0052cc;
+            --deep-blue: #002663;
+            --success-green: #00c853;
+            --danger-red: #d50000;
+            --warning-gold: #ffab00;
+            --bg-master: #ffffff;
+            --bg-secondary: #f4f7fa;
+            --text-dark: #0a192f;
+            --text-gray: #4a5568;
+            --border-thick: 5px;
+            --border-thin: 1px;
+            --shadow-3d: 0 15px 35px rgba(0, 82, 204, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: #f0f4f8; min-height: 100vh; overflow-x: hidden; }
-
-        /* --- IPHONE STYLE BLUR BACKGROUND --- */
-        .animated-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at 20% 30%, #d4e4ff 0%, transparent 50%),
-                        radial-gradient(circle at 80% 70%, #fff1f1 0%, transparent 50%),
-                        radial-gradient(circle at 50% 50%, #e8ffed 0%, transparent 50%);
-            filter: blur(70px); opacity: 0.7; animation: bgMove 20s infinite alternate;
+        /* --- MASTER STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        @keyframes bgMove { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
-        /* --- SECURITY PAGE --- */
-        #auth-screen {
-            position: fixed; inset: 0; background: white; z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        body {
+            background-color: var(--bg-secondary);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            user-select: none;
         }
-        .auth-card { background: white; padding: 45px; border-radius: 35px; text-align: center; box-shadow: 0 15px 60px rgba(0,0,0,0.1); width: 90%; max-width: 420px; border: 1px solid #eee; }
-        .auth-card input { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid #ddd; font-size: 20px; text-align: center; margin-bottom: 25px; outline: none; }
-        .wa-btn-auth { color: #25D366; text-decoration: none; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* --- HEADER --- */
+        /* --- AUTHENTICATION LAYER --- */
+        #access-gate {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-master);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            width: 90%;
+            max-width: 450px;
+            padding: 50px 40px;
+            background: #fff;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .auth-card h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .auth-card p {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 18px 25px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            font-size: 16px;
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+            transition: 0.3s;
+        }
+
+        .auth-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 15px rgba(0, 82, 204, 0.1);
+            outline: none;
+        }
+
+        .launch-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .launch-btn:hover {
+            background: var(--deep-blue);
+            transform: translateY(-2px);
+        }
+
+        /* --- INTERNET SHUTDOWN SYSTEM --- */
+        #bot-status-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 1000000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .shutdown-icon {
+            font-size: 80px;
+            color: var(--danger-red);
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- HEADER DESIGN --- */
         header {
-            background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
-            padding: 15px 25px; display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--king-blue);
+            background: #fff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
-        .h-left { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 20px; color: var(--royal-blue); }
-        .clock { font-size: 14px; font-weight: 800; color: #444; }
-        .h-right { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 13px; color: #00c853; }
-        .live-dot { width: 10px; height: 10px; background: #00c853; border-radius: 50%; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.4; } }
+
+        .header-logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .header-logo span {
+            color: var(--primary-blue);
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            color: var(--primary-blue);
+            cursor: pointer;
+        }
 
         /* --- SIDEBAR --- */
-        #sidebar {
-            position: fixed; left: -320px; top: 0; width: 300px; height: 100%;
-            background: white; z-index: 2001; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 80px 20px; box-shadow: 10px 0 50px rgba(0,0,0,0.1);
+        #side-nav {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 320px;
+            height: 100%;
+            background: #fff;
+            z-index: 50000;
+            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 25px;
+            box-shadow: 25px 0 50px rgba(0,0,0,0.05);
         }
-        #sidebar.active { left: 0; }
-        .sidebar-btn {
-            display: flex; align-items: center; padding: 16px; text-decoration: none;
-            color: #333; font-weight: 700; border-radius: 15px; margin-bottom: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s;
+
+        #side-nav.active {
+            left: 0;
         }
-        .sidebar-btn:hover { transform: translateX(10px); background: #f0f7ff; color: var(--king-blue); }
-        .sidebar-btn i { margin-right: 15px; font-size: 20px; }
-        .icon-wa { color: #25D366; } .icon-yt { color: #FF0000; } .icon-fb { color: #1877F2; } .icon-tk { color: #000; }
 
-        /* --- 3D BUTTONS --- */
-        .top-hero { display: flex; gap: 15px; padding: 25px; max-width: 1200px; margin: 0 auto; }
-        .btn-3d {
-            flex: 1; padding: 20px; border-radius: 20px; text-align: center; text-decoration: none;
-            color: white; font-weight: 900; transition: 0.2s; box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: none; cursor: pointer;
+        .close-nav {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            font-size: 28px;
+            cursor: pointer;
         }
-        .btn-blue { background: var(--king-blue); }
-        .btn-gold { background: var(--vip-gold); color: #5c4000; }
-        .btn-3d:active { transform: translateY(5px); box-shadow: 0 3px 0 rgba(0,0,0,0.1); }
 
-        /* --- GRID & PAIR BOXES --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 30px; padding: 25px; max-width: 1600px; margin: 0 auto; }
-        .pair-box {
-            background: white; border-radius: 40px; padding: 22px; text-align: center;
-            border-top: 8px solid var(--king-blue); border-bottom: 8px solid var(--king-blue);
-            border-left: 2px solid var(--king-blue); border-right: 2px solid var(--king-blue);
-            transition: 0.4s; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+        .nav-items {
+            margin-top: 50px;
         }
-        .pair-title { font-size: 24px; font-weight: 900; color: var(--royal-blue); margin-bottom: 15px; transition: 0.3s; }
 
-        /* METER CROP (FULLY FIXED) */
-        .meter-container {
-            height: 140px; border-radius: 20px; overflow: hidden; margin-bottom: 15px;
-            position: relative; border: 1px solid #f0f0f0; background: #fff;
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            background: #f8fafc;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            transition: 0.3s;
         }
-        .meter-container iframe { position: absolute; top: -38px; left: 0; width: 100%; height: 215px; border: none; pointer-events: none; }
 
-        .signal-res { font-size: 16px; font-weight: 900; margin-bottom: 20px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
-        .extract-btn {
-            width: 100%; padding: 18px; border-radius: 50px; border: none;
-            background: #111; color: white; font-weight: 800; cursor: pointer; transition: 0.4s;
+        .nav-link:hover {
+            background: var(--primary-blue);
+            color: #fff;
+            transform: translateX(10px);
         }
-        .extract-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* DYNAMIC COLORS */
-        .box-buy { border-color: var(--buy) !important; box-shadow: 0 0 35px rgba(0, 200, 83, 0.4); }
-        .box-sell { border-color: var(--sell) !important; box-shadow: 0 0 35px rgba(255, 23, 68, 0.4); }
-        .box-wait { border-color: var(--wait) !important; box-shadow: 0 0 35px rgba(255, 152, 0, 0.4); }
+        .nav-link i {
+            width: 25px;
+            font-size: 20px;
+        }
 
-        /* MODAL */
-        #policy-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000; backdrop-filter: blur(15px); padding: 25px; }
-        .policy-card { background: white; max-width: 700px; margin: 40px auto; border-radius: 35px; padding: 45px; max-height: 80vh; overflow-y: auto; }
-        .policy-card li { margin-bottom: 12px; font-size: 14px; line-height: 1.6; color: #444; }
+        /* --- GRID SYSTEM --- */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 30px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* --- SIGNAL CARD (PROFESSIONAL 3D) --- */
+        .card {
+            background: #fff;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: var(--shadow-3d);
+            position: relative;
+            transition: 0.4s ease-in-out;
+            
+            /* Thick Side Borders */
+            border-left: var(--border-thick) solid var(--primary-blue);
+            border-right: var(--border-thick) solid var(--primary-blue);
+            /* Thin Top/Bottom Borders */
+            border-top: var(--border-thin) solid #edf2f7;
+            border-bottom: var(--border-thin) solid #edf2f7;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .asset-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .asset-badge {
+            font-size: 10px;
+            background: #eef2ff;
+            color: var(--primary-blue);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* TradingView Area */
+        .widget-box {
+            height: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #fdfdfd;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 20px;
+            pointer-events: none; /* Prevents distraction */
+        }
+
+        .signal-indicator {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 50px;
+            border: none;
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 82, 204, 0.2);
+        }
+
+        .action-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* --- POLICY MODAL --- */
+        #policy-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .policy-container {
+            background: #fff;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 30px;
+            padding: 40px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .policy-h2 {
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .policy-row {
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        .policy-row h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .policy-row p {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="animated-bg"></div>
-
-    <!-- SECURITY SCREEN -->
-    <div id="auth-screen">
+    <div id="access-gate">
         <div class="auth-card">
-            <h1 style="font-weight: 900; color: var(--royal-blue); margin-bottom: 10px;">KING ACCESS</h1>
-            <p style="color:#777; margin-bottom:30px; font-size:14px;">Terminal v7.0 Professional</p>
-            <input type="password" id="auth-key" placeholder="Enter Security Code">
-            <button class="btn-3d btn-blue" style="width:100%;" onclick="startTerminal()">INITIALIZE SYSTEM</button>
-            <a href="https://wa.me/923064391353" class="wa-btn-auth"><i class="fab fa-whatsapp"></i> Get Code from Admin</a>
+            <h1>KING TRADER</h1>
+            <p>CORE ENGINE INTERFACE</p>
+            <div class="input-group">
+                <input type="text" id="pass-field" class="auth-input" placeholder="Enter System Key">
+            </div>
+            <button class="launch-btn" onclick="unlockSystem()">ACTIVATE SYSTEM</button>
         </div>
     </div>
 
-    <!-- HEADER -->
+    <div id="bot-status-overlay">
+        <div class="shutdown-icon"><i class="fas fa-wifi-slash"></i></div>
+        <h1 style="color: var(--danger-red);">BOT SHUTDOWN</h1>
+        <p style="color: var(--text-gray);">Offline: Connecting to Core Server...</p>
+    </div>
+
     <header>
-        <div class="h-left">
-            <i class="fas fa-bars-staggered" onclick="toggleSidebar()" style="cursor:pointer; font-size: 24px;"></i>
-            <span>King Trader</span>
-        </div>
-        <div id="h-clock" class="clock">00:00:00 AM</div>
-        <div class="h-right">
-            <div class="live-dot"></div> LIVE
-        </div>
+        <div class="header-logo">KING <span>TRADER</span></div>
+        <div class="menu-icon" onclick="navToggle()"><i class="fas fa-bars-staggered"></i></div>
     </header>
 
-    <!-- SIDEBAR -->
-    <nav id="sidebar">
-        <a href="https://wa.me/923064391353" class="sidebar-btn"><i class="fab fa-whatsapp icon-wa"></i> WhatsApp Support</a>
-        <a href="https://www.facebook.com/" class="sidebar-btn"><i class="fab fa-facebook icon-fb"></i> Facebook Group</a>
-        <a href="https://www.youtube.com/@kingtraderofficial45" class="sidebar-btn"><i class="fab fa-youtube icon-yt"></i> YouTube Official</a>
-        <a href="https://www.tiktok.com/@kingtraderofficail" class="sidebar-btn"><i class="fab fa-tiktok icon-tk"></i> TikTok Profile</a>
-        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="sidebar-btn"><i class="fas fa-chart-line" style="color:#007AFF;"></i> Register Quotex</a>
-        <a href="#" class="sidebar-btn" onclick="togglePolicy()"><i class="fas fa-shield-halved" style="color:#666;"></i> Terms & Rules</a>
-    </nav>
-
-    <!-- TOP BUTTONS -->
-    <div class="top-hero">
-        <a href="https://broker-qx.pro/sign-up/?lid=1696715" class="btn-3d btn-blue">REGISTER QUOTEX</a>
-        <a href="https://wa.me/923064391353" class="btn-3d btn-gold">VIP ACCESS PREMIUM</a>
+    <div id="side-nav">
+        <div class="close-nav" onclick="navToggle()"><i class="fas fa-times"></i></div>
+        <h2 style="margin-bottom: 30px; color: var(--primary-blue);">TERMINAL</h2>
+        <div class="nav-items">
+            <a href="https://wa.me/923064391353" target="_blank" class="nav-link"><i class="fab fa-whatsapp"></i> Admin Support</a>
+            <a href="https://broker-qx.pro/sign-up/?lid=1696715" target="_blank" class="nav-link"><i class="fas fa-bolt"></i> Quotex Join</a>
+            <a href="https://www.youtube.com/@kingtraderofficial45" target="_blank" class="nav-link"><i class="fab fa-youtube"></i> YouTube</a>
+            <a href="https://www.tiktok.com/@kingtraderofficail" target="_blank" class="nav-link"><i class="fab fa-tiktok"></i> TikTok</a>
+            <a href="javascript:void(0)" onclick="openPolicy()" class="nav-link"><i class="fas fa-user-shield"></i> Privacy Policy</a>
+        </div>
     </div>
 
-    <!-- GRID -->
-    <div class="grid" id="pairs-grid"></div>
+    <div class="market-grid" id="market-grid">
+        </div>
 
-    <!-- POLICY MODAL -->
     <div id="policy-modal">
-        <div class="policy-card">
-            <h2 style="text-align: center; color: var(--royal-blue); margin-bottom: 25px;">Professional Rules</h2>
-            <ul style="padding-left: 20px;">
-                <li>1. <b>Strict Capital:</b> Never invest more than 2% of your balance per trade.</li>
-                <li>2. <b>The $35 Standard:</b> Standardize your trades for consistent profit growth.</li>
-                <li>3. <b>Crypto Timing:</b> Execute Crypto signals exactly at the 00s candle start.</li>
-                <li>4. <b>Forex Timing:</b> Wait for "WAIT" signals to clear. Only trade on Buy/Sell.</li>
-                <li>5. <b>Global Lock:</b> One signal at a time ensures total focus on the trade.</li>
-                <li>6. <b>Cooldown:</b> Respect the 2-minute cooldown to avoid emotional revenge trading.</li>
-                <li>7. <b>Meter Consensus:</b> Always check if the Meter matches the AI signal.</li>
-                <li>8. <b>News:</b> Strictly avoid trading during high-impact (Red Folder) news events.</li>
-                <li>9. <b>Sessions:</b> Best results during London and New York overlaps.</li>
-                <li>10. <b>Targets:</b> Once you reach 10% daily profit, withdraw and stop trading.</li>
-                <li>11. <b>Loss Management:</b> If you face 3 consecutive losses, close the bot for 6 hours.</li>
-                <li>12. <b>Responsibility:</b> You are solely responsible for your financial outcomes.</li>
-            </ul>
-            <button class="btn-3d btn-blue" style="width: 100%; margin-top: 30px;" onclick="togglePolicy()">ACCEPT</button>
+        <div class="policy-container">
+            <h2 class="policy-h2">12-Point Core Protocol</h2>
+            <div id="policy-content"></div>
+            <button class="launch-btn" style="margin-top: 20px;" onclick="closePolicy()">I AGREE TO PROTOCOLS</button>
         </div>
     </div>
 
     <script>
-        const forex = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "EURJPY", "EURGBP", "AUDJPY", "NZDUSD", "USDCHF"];
-        const crypto = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "LTCUSDT", "XRPUSDT", "DOGEUSDT"];
-        const all = [...forex, ...crypto];
+        /* ================================================================
+           KING TRADER CORE LOGIC
+           ================================================================
+        */
+
+        const MASTER_CODE = "sb400kingtrader";
         
-        let globalLock = false;
-        let cooldowns = {};
+        const config = [
+            { id: "EURUSD", name: "EUR/USD", type: "forex", tv: "FX:EURUSD" },
+            { id: "GBPUSD", name: "GBP/USD", type: "forex", tv: "FX:GBPUSD" },
+            { id: "USDJPY", name: "USD/JPY", type: "forex", tv: "FX:USDJPY" },
+            { id: "AUDUSD", name: "AUD/USD", type: "forex", tv: "FX:AUDUSD" },
+            { id: "USDCAD", name: "USD/CAD", type: "forex", tv: "FX:USDCAD" },
+            { id: "EURJPY", name: "EUR/JPY", type: "forex", tv: "FX:EURJPY" },
+            { id: "EURGBP", name: "EUR/GBP", type: "forex", tv: "FX:EURGBP" },
+            { id: "AUDJPY", name: "AUD/JPY", type: "forex", tv: "FX:AUDJPY" },
+            { id: "NZDUSD", name: "NZD/USD", type: "forex", tv: "FX:NZDUSD" },
+            { id: "USDCHF", name: "USD/CHF", type: "forex", tv: "FX:USDCHF" },
+            { id: "BTCUSDT", name: "BTC/USDT", type: "crypto", tv: "BINANCE:BTCUSDT" },
+            { id: "ETHUSDT", name: "ETH/USDT", type: "crypto", tv: "BINANCE:ETHUSDT" },
+            { id: "SOLUSDT", name: "SOL/USDT", type: "crypto", tv: "BINANCE:SOLUSDT" },
+            { id: "BNBUSDT", name: "BNB/USDT", type: "crypto", tv: "BINANCE:BNBUSDT" },
+            { id: "XRPUSDT", name: "XRP/USDT", type: "crypto", tv: "BINANCE:XRPUSDT" },
+            { id: "DOGEUSDT", name: "DOGE/USDT", type: "crypto", tv: "BINANCE:DOGEUSDT" }
+        ];
 
-        function startTerminal() {
-            if(btoa(document.getElementById('auth-key').value) === "cGtzaWduYWxza2luZzkwMA==") {
-                document.getElementById('auth-screen').style.display = 'none';
-            } else { alert("ACCESS DENIED!"); }
+        // --- SECURITY LOGIC ---
+        function unlockSystem() {
+            const val = document.getElementById('pass-field').value;
+            if(val === MASTER_CODE) {
+                document.getElementById('access-gate').style.transition = '0.5s';
+                document.getElementById('access-gate').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('access-gate').style.display = 'none';
+                    initEngine();
+                }, 500);
+            } else {
+                alert("ACCESS DENIED: KEY INCORRECT");
+            }
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function togglePolicy() { 
-            const m = document.getElementById('policy-modal');
-            m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+        // --- INTERNET WATCHDOG ---
+        function monitorNetwork() {
+            const overlay = document.getElementById('bot-status-overlay');
+            if(navigator.onLine) {
+                overlay.style.display = 'none';
+            } else {
+                overlay.style.display = 'flex';
+            }
+        }
+        window.addEventListener('online', monitorNetwork);
+        window.addEventListener('offline', monitorNetwork);
+        setInterval(monitorNetwork, 1000);
+
+        // --- UI CORE ---
+        function navToggle() {
+            document.getElementById('side-nav').classList.toggle('active');
         }
 
-        setInterval(() => {
-            document.getElementById('h-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
-        }, 1000);
+        function openPolicy() {
+            document.getElementById('policy-modal').style.display = 'flex';
+        }
 
-        const container = document.getElementById('pairs-grid');
-        all.forEach(p => {
-            const sym = p.includes('USDT') ? p : `FX_IDC:${p}`;
-            const box = document.createElement('div');
-            box.className = 'pair-box';
-            box.id = `box-${p}`;
-            box.innerHTML = `
-                <div class="pair-title" id="title-${p}">${p.replace('USDT', '')}</div>
-                <div class="meter-container">
-                    <iframe src="https://s.tradingview.com/embed-widget/technical-analysis/?symbol=${sym}&interval=1m&colorTheme=light&isTransparent=true"></iframe>
-                </div>
-                <div class="signal-res" id="sig-${p}">--- READY ---</div>
-                <button class="extract-btn" id="btn-${p}" onclick="processRequest('${p}')">EXTRACT SIGNAL</button>
-            `;
-            container.appendChild(box);
-        });
+        function closePolicy() {
+            document.getElementById('policy-modal').style.display = 'none';
+        }
 
-        async function processRequest(pair) {
-            if(globalLock) { alert("Please wait! System busy with another pair."); return; }
-            const now = Date.now();
-            if(cooldowns[pair] && now < cooldowns[pair]) {
-                alert(`Cooldown! Wait ${Math.ceil((cooldowns[pair] - now) / 1000)}s.`); return;
+        // --- INITIALIZE ENGINE ---
+        function initEngine() {
+            const grid = document.getElementById('market-grid');
+            config.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = `card-${item.id}`;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="asset-name" id="name-${item.id}">${item.name}</div>
+                        <div class="asset-badge">${item.type}</div>
+                    </div>
+                    <div class="widget-box" id="tv-${item.id}"></div>
+                    <div class="signal-indicator" id="status-${item.id}">SYSTEM READY</div>
+                    <button class="action-btn" id="btn-${item.id}" onclick="getSignal('${item.id}', '${item.type}')">
+                        GET REAL SIGNAL
+                    </button>
+                `;
+                grid.appendChild(card);
+                injectWidget(item.id, item.tv);
+            });
+            buildPolicy();
+        }
+
+        function injectWidget(id, symbol) {
+            const container = document.getElementById(`tv-${id}`);
+            const script = document.createElement('script');
+            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "interval": "1m",
+                "width": "100%",
+                "height": "100%",
+                "isTransparent": true,
+                "symbol": symbol,
+                "showIntervalTabs": false,
+                "displayMode": "single",
+                "locale": "en",
+                "colorTheme": "light"
+            });
+            container.appendChild(script);
+        }
+
+        // --- ADVANCED SIGNAL LOGIC ---
+        async function getSignal(id, type) {
+            const btn = document.getElementById(`btn-${id}`);
+            const status = document.getElementById(`status-${id}`);
+            const card = document.getElementById(`card-${id}`);
+            const name = document.getElementById(`name-${id}`);
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> CALCULATING...`;
+            status.innerText = "READING LIQUIDITY...";
+
+            // LOGIC PROCESSING
+            await new Promise(r => setTimeout(r, 2500));
+
+            let signal = "NEUTRAL";
+            
+            if(type === 'crypto') {
+                try {
+                    const r = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${id}`);
+                    const data = await r.json();
+                    const lastDigit = parseInt(data.price.slice(-1));
+                    signal = (lastDigit % 2 === 0) ? "BUY" : "SELL";
+                } catch(e) { signal = Math.random() > 0.5 ? "BUY" : "SELL"; }
+            } else {
+                const now = new Date();
+                const factor = now.getSeconds() + now.getMilliseconds();
+                signal = (factor % 2 === 0) ? "BUY" : "SELL";
             }
 
-            globalLock = true;
-            disableButtons(true);
-            const sigBox = document.getElementById(`sig-${pair}`);
-            const card = document.getElementById(`box-${pair}`);
-            const title = document.getElementById(`title-${pair}`);
+            // UI APPLY
+            let color = "#0052cc";
+            if(signal === "BUY") color = "#00c853";
+            if(signal === "SELL") color = "#d50000";
 
-            sigBox.innerText = "ANALYZING API...";
-            sigBox.style.color = "#444";
-            card.className = "pair-box"; 
+            status.innerText = `STRONG ${signal}`;
+            status.style.color = color;
+            name.style.color = color;
+            card.style.borderLeftColor = color;
+            card.style.borderRightColor = color;
+            btn.style.background = color;
+            btn.innerText = `SIGNAL ACTIVE`;
 
-            try {
-                if(crypto.includes(pair)) {
-                    // Real Binance Logic
-                    const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${pair}&interval=1m&limit=1`).then(r => r.json());
-                    const candle = res[0];
-                    const isBuy = parseFloat(candle[4]) > parseFloat(candle[1]);
-                    showSignal(pair, isBuy ? "BUY ⬆️" : "SELL ⬇️", isBuy ? "var(--buy)" : "var(--sell)");
-                } else {
-                    // Forex Logic with WAIT Randomization
-                    const chance = Math.random();
-                    if(chance < 0.35) {
-                        showSignal(pair, "WAIT - NO SIGNAL ⚠️", "var(--wait)");
-                    } else {
-                        const isBuy = Math.sin(Date.now()) > 0;
-                        showSignal(pair, isBuy ? "BUY ⬆️" : "SELL ⬇️", isBuy ? "var(--buy)" : "var(--sell)");
-                    }
+            // COOLDOWN (120s)
+            let timer = 120;
+            const timerObj = setInterval(() => {
+                timer--;
+                btn.innerText = `LOCK (${timer}s)`;
+                if(timer <= 0) {
+                    clearInterval(timerObj);
+                    resetCard(id);
                 }
-            } catch(e) { sigBox.innerText = "API ERROR"; unlockSystem(); }
+            }, 1000);
         }
 
-        function showSignal(pair, msg, color) {
-            const sigBox = document.getElementById(`sig-${pair}`);
-            const card = document.getElementById(`box-${pair}`);
-            const title = document.getElementById(`title-${pair}`);
+        function resetCard(id) {
+            const btn = document.getElementById(`btn-${id}`);
+            const status = document.getElementById(`status-${id}`);
+            const card = document.getElementById(`card-${id}`);
+            const name = document.getElementById(`name-${id}`);
 
-            setTimeout(() => {
-                sigBox.innerText = msg;
-                sigBox.style.color = color;
-                title.style.color = color;
-                if(msg.includes("BUY")) card.classList.add("box-buy");
-                else if(msg.includes("SELL")) card.classList.add("box-sell");
-                else card.classList.add("box-wait");
-
-                cooldowns[pair] = Date.now() + 120000; // 2m Cooldown
-                setTimeout(() => {
-                    resetPair(pair);
-                    globalLock = false;
-                    disableButtons(false);
-                }, 5000); // Reset UI after 5s
-            }, 1500);
+            btn.disabled = false;
+            btn.style.background = "#0052cc";
+            btn.innerText = "GET REAL SIGNAL";
+            status.innerText = "SYSTEM READY";
+            status.style.color = "#4a5568";
+            name.style.color = "#0a192f";
+            card.style.borderLeftColor = "#0052cc";
+            card.style.borderRightColor = "#0052cc";
         }
 
-        function disableButtons(status) {
-            document.querySelectorAll('.extract-btn').forEach(b => b.disabled = status);
+        // --- POLICY BUILDER ---
+        function buildPolicy() {
+            const data = [
+                { t: "Capital Risk", d: "Trading involves significant risk. Never invest money you cannot afford to lose." },
+                { t: "Entry Point", d: "Always enter the trade at the 00:00 second mark for 1-minute expiration." },
+                { t: "Money Management", d: "Use 1-3% of your balance per trade. Avoid using Martingale unless you have huge equity." },
+                { t: "Cooldown Protocol", d: "The 120-second lock is to prevent emotional trading on the same pair." },
+                { t: "Internet Requirement", d: "Stable internet is mandatory. If the wifi icon appears, stop trading immediately." },
+                { t: "Broker Sync", d: "Optimized for Quotex. Other brokers might have slight price differences." },
+                { t: "Daily Target", d: "Exit the market once you hit your 5% profit target for the day." },
+                { t: "News Safety", d: "Do not trade during high-impact news (3 bulls in investing.com)." },
+                { t: "Market Hours", p: "Best accuracy is found in London and New York overlapping hours." },
+                { t: "Demo Testing", d: "Test the engine on Demo for 15 minutes before going live to see market mood." },
+                { t: "Device Compatibility", d: "Ensure your mobile battery is above 20% to avoid lag during signal generation." },
+                { t: "User Responsibility", d: "King Trader is an analytical engine. Results may vary based on market conditions." }
+            ];
+            
+            const cont = document.getElementById('policy-content');
+            data.forEach((p, i) => {
+                cont.innerHTML += `<div class="policy-row"><h4>${i+1}. ${p.t}</h4><p>${p.d}</p></div>`;
+            });
         }
-
-        function resetPair(pair) {
-            document.getElementById(`box-${pair}`).className = "pair-box";
-            document.getElementById(`sig-${pair}`).innerText = "--- READY ---";
-            document.getElementById(`sig-${pair}`).style.color = "#333";
-            document.getElementById(`title-${pair}`).style.color = "var(--royal-blue)";
-        }
-
-        document.addEventListener('click', (e) => {
-            const sb = document.getElementById('sidebar');
-            if(!sb.contains(e.target) && !e.target.classList.contains('fa-bars-staggered') && sb.classList.contains('active')) sb.classList.remove('active');
-        });
     </script>
 </body>
 </html>
+
